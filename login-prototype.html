@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>移动端登录页面原型</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            background-color: #f5f7fa;
+            color: #333;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 40px;
+        }
+        
+        .prototype {
+            flex: 1;
+            max-width: 375px;
+            height: 667px;
+            background-color: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+        
+        .design-notes {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .design-notes h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .design-notes h3 {
+            font-size: 16px;
+            margin: 16px 0 8px;
+            color: #333;
+        }
+        
+        .design-notes p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #666;
+        }
+        
+        .design-notes ul {
+            padding-left: 20px;
+            margin-bottom: 12px;
+        }
+        
+        .design-notes li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .login-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        
+        .login-header {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+        
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+        
+        .login-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px 14px 40px;
+            font-size: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s;
+            outline: none;
+        }
+        
+        .form-group input:focus {
+            border-color: #6e8efb;
+            box-shadow: 0 0 0 2px rgba(110, 142, 251, 0.2);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            fill: #aaa;
+        }
+        
+        .form-group .forgot-password {
+            text-align: right;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .form-group .forgot-password a {
+            color: #6e8efb;
+            text-decoration: none;
+        }
+        
+        .login-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #6e8efb, #a777e3);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(110, 142, 251, 0.4);
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .remember-me label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .custom-checkbox {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            margin-right: 8px;
+            position: relative;
+            border: 2px solid #6e8efb;
+            background-color: #6e8efb;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .custom-checkbox svg {
+            width: 12px;
+            height: 12px;
+            fill: white;
+        }
+        
+        .forgot-password {
+            font-size: 14px;
+            color: #888;
+            text-align: right;
+            margin-left: auto;
+        }
+        
+        .forgot-password a {
+            color: #6e8efb;
+            text-decoration: none;
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: white;
+        }
+        
+        .signup-link a {
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .success-message {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 10;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+        
+        .success-message h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .success-message p {
+            color: #666;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .prototype, .design-notes {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="prototype">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>欢迎登录</h1>
+                    <p>请输入您的账号信息</p>
+                </div>
+                
+                <div class="login-form">
+                    <div class="form-group">
+                        <label for="username">用户名/手机号</label>
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                        </svg>
+                        <input type="text" id="username" placeholder="请输入用户名或手机号">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" />
+                        </svg>
+                        <input type="password" id="password" placeholder="请输入密码">
+                        <div class="forgot-password">
+                            <a href="#" id="forgot-link">忘记密码?</a>
+                        </div>
+                    </div>
+                    
+                    <div class="remember-me">
+                        <label>
+                            <div class="custom-checkbox">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+                                </svg>
+                            </div>
+                            记住我
+                        </label>
+                    </div>
+                    
+                    <button class="login-button" id="login-btn">登录</button>
+                </div>
+                
+                <div class="signup-link">
+                    还没有账号? <a href="#" id="signup-link">立即注册</a>
+                </div>
+            </div>
+            
+            <div class="success-message">
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" fill="white" />
+                    </svg>
+                </div>
+                <h2>登录成功</h2>
+                <p>欢迎回来！正在为您跳转至个人中心...</p>
+            </div>
+        </div>
+        
+        <div class="design-notes">
+            <h2>设计说明</h2>
+            
+            <h3>视觉设计</h3>
+            <ul>
+                <li><strong>渐变背景色：</strong>选用紫蓝色渐变营造科技感与高级感，同时给用户平静、信任的感觉</li>
+                <li><strong>卡片式表单：</strong>白色卡片形成强对比，突出登录区域，提高可读性</li>
+                <li><strong>圆角设计：</strong>所有元素采用圆角处理，视觉更柔和，符合移动端设计趋势</li>
+                <li><strong>阴影效果：</strong>恰当使用阴影增强层次感，营造轻盈的视觉体验</li>
+                <li><strong>图标引导：</strong>输入框添加相关图标，直观表明输入内容类型</li>
+            </ul>
+            
+            <h3>交互设计</h3>
+            <ul>
+                <li><strong>输入框焦点效果：</strong>聚焦时边框变色并增加浅色阴影，提供明确的视觉反馈</li>
+                <li><strong>登录按钮悬停效果：</strong>按钮上浮并增强阴影，增强按钮可点击性</li>
+                <li><strong>记住我选项：</strong>默认选中的复选框，方便用户下次登录</li>
+                <li><strong>登录成功反馈：</strong>成功后显示浮层反馈，增加完成感和流程清晰度</li>
+            </ul>
+            
+            <h3>功能特点</h3>
+            <ul>
+                <li><strong>灵活的账号输入：</strong>支持用户名或手机号登录，增加便利性</li>
+                <li><strong>记住登录状态：</strong>通过"记住我"功能，方便用户下次直接进入应用</li>
+                <li><strong>密码恢复选项：</strong>醒目的"忘记密码"链接，帮助用户解决访问障碍</li>
+                <li><strong>注册入口：</strong>为新用户提供明确的注册路径</li>
+            </ul>
+            
+            <h3>交互说明</h3>
+            <p>点击以下元素可以体验交互效果：</p>
+            <ul>
+                <li>"登录"按钮 - 触发登录成功状态</li>
+                <li>"记住我"复选框 - 可以点击切换状态</li>
+                <li>"忘记密码"链接 - 可点击</li>
+                <li>"立即注册"链接 - 可点击</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginBtn = document.getElementById('login-btn');
+            const successMessage = document.querySelector('.success-message');
+            const forgotLink = document.getElementById('forgot-link');
+            const signupLink = document.getElementById('signup-link');
+            const checkbox = document.querySelector('.custom-checkbox');
+            
+            // 登录按钮点击事件
+            loginBtn.addEventListener('click', function() {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                if (username && password) {
+                    successMessage.style.display = 'flex';
+                    
+                    // 3秒后隐藏成功消息
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                } else {
+                    alert('请输入用户名和密码');
+                }
+            });
+            
+            // 忘记密码链接点击事件
+            forgotLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('忘记密码功能将在此处实现');
+            });
+            
+            // 注册链接点击事件
+            signupLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('注册功能将在此处实现');
+            });
+            
+            // 记住我复选框点击事件
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+                if (this.classList.contains('checked')) {
+                    this.style.backgroundColor = '#6e8efb';
+                } else {
+                    this.style.backgroundColor = 'transparent';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
