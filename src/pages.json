@@ -23,7 +23,7 @@
 		{
 			"path": "pages/main/index",
 			"style": {
-				"navigationBarTitleText": "智慧管理系统",
+				"navigationBarTitleText": "智能楼宇环境监控系统",
 				"navigationStyle": "custom"
 			}
 		},

@@ -1,6 +1,57 @@
 <template>
   <view class="threshold-settings">
-    <view class="settings-section">
+    <!-- 当前阈值显示 -->
+    <view class="threshold-section">
+      <view class="section-title">当前阈值</view>
+      <view class="current-thresholds">
+        <view class="threshold-card">
+          <view class="card-header">
+            <uni-icons type="thermometer" size="24" color="#4a6fee"></uni-icons>
+            <text class="card-title">温度阈值</text>
+          </view>
+          <view class="card-value">
+            <text class="value">{{ currentThresholds.temperature || '--' }}</text>
+            <text class="unit">°C</text>
+          </view>
+        </view>
+
+        <view class="threshold-card">
+          <view class="card-header">
+            <uni-icons type="wind" size="24" color="#4a6fee"></uni-icons>
+            <text class="card-title">湿度阈值</text>
+          </view>
+          <view class="card-value">
+            <text class="value">{{ currentThresholds.humidity || '--' }}</text>
+            <text class="unit">%</text>
+          </view>
+        </view>
+
+        <view class="threshold-card">
+          <view class="card-header">
+            <uni-icons type="sun" size="24" color="#4a6fee"></uni-icons>
+            <text class="card-title">光照上限</text>
+          </view>
+          <view class="card-value">
+            <text class="value">{{ currentThresholds.lightUpper || '--' }}</text>
+            <text class="unit">lx</text>
+          </view>
+        </view>
+
+        <view class="threshold-card">
+          <view class="card-header">
+            <uni-icons type="sun" size="24" color="#4a6fee"></uni-icons>
+            <text class="card-title">光照下限</text>
+          </view>
+          <view class="card-value">
+            <text class="value">{{ currentThresholds.lightLower || '--' }}</text>
+            <text class="unit">lx</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 阈值设置表单 -->
+    <view class="threshold-section">
       <view class="section-title">阈值设置</view>
       <view class="settings-form">
         <view class="form-row">
@@ -97,48 +148,73 @@
 </template>
 
 <script setup>
-import { reactive, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { thresholdAPI } from '@/api'
+import { user } from '@/store/user'
 
-const formData = reactive({
-  temperature: '',
-  humidity: '',
-  lightUpper: '',
-  lightLower: ''
+// 打印用户信息，检查是否正确获取
+console.log('当前用户信息：', user)
+
+// 当前阈值数据
+const currentThresholds = ref({
+  temperature: null,
+  humidity: null,
+  lightUpper: null,
+  lightLower: null
+})
+
+// 表单数据
+const formData = ref({
+  temperature: null,
+  humidity: null,
+  lightUpper: null,
+  lightLower: null
 })
 
 // 获取当前阈值设置
 const fetchCurrentThresholds = async () => {
   try {
     const res = await thresholdAPI.getCurrentThresholds()
-    formData.temperature = res.data.temperatureMax
-    formData.humidity = res.data.humidityMax
-    formData.lightUpper = res.data.lightMax
-    formData.lightLower = res.data.lightMin
+    if (res.data) {
+      currentThresholds.value = {
+        temperature: res.data.temperature,
+        humidity: res.data.humidity,
+        lightUpper: res.data.lightUpper,
+        lightLower: res.data.lightLower
+      }
+    }
   } catch (error) {
-    console.error('获取阈值设置失败：', error)
+    console.error('获取当前阈值失败：', error)
+    uni.showToast({
+      title: '获取阈值数据失败',
+      icon: 'none'
+    })
   }
 }
 
-// 表单验证：检查是否有输入值，以及光照强度的上下限关系
+// 表单验证
 const isFormValid = computed(() => {
-  const hasInput = formData.temperature || 
-                   formData.humidity || 
-                   formData.lightUpper || 
-                   formData.lightLower
+  const hasInput = formData.value.temperature || 
+                   formData.value.humidity || 
+                   formData.value.lightUpper || 
+                   formData.value.lightLower
 
   // 如果设置了光照强度的任一值，则需要验证上下限关系
-  if (formData.lightUpper && formData.lightLower) {
-    return hasInput && Number(formData.lightUpper) > Number(formData.lightLower)
+  if (formData.value.lightUpper && formData.value.lightLower) {
+    return hasInput && Number(formData.value.lightUpper) > Number(formData.value.lightLower)
   }
 
   return hasInput
 })
 
+// 提交表单
 const handleSubmit = async () => {
-  // 如果同时设置了上下限，需要验证大小关系
-  if (formData.lightUpper && formData.lightLower) {
-    if (Number(formData.lightUpper) <= Number(formData.lightLower)) {
+  // 验证光照强度上下限
+  if (formData.value.lightUpper !== null && formData.value.lightLower !== null) {
+    const upperLimit = Number(formData.value.lightUpper)
+    const lowerLimit = Number(formData.value.lightLower)
+    
+    if (upperLimit <= lowerLimit) {
       uni.showToast({
         title: '光照强度上限必须大于下限',
         icon: 'none'
@@ -147,8 +223,8 @@ const handleSubmit = async () => {
     }
   }
 
-  // 检查是否有任何输入
-  if (!isFormValid.value) {
+  // 检查是否有输入
+  if (Object.values(formData.value).every(v => v === null)) {
     uni.showToast({
       title: '请至少设置一项阈值',
       icon: 'none'
@@ -157,28 +233,38 @@ const handleSubmit = async () => {
   }
 
   try {
-    await thresholdAPI.updateThresholds({
-      temperatureMax: formData.temperature ? Number(formData.temperature) : undefined,
-      humidityMax: formData.humidity ? Number(formData.humidity) : undefined,
-      lightMax: formData.lightUpper ? Number(formData.lightUpper) : undefined,
-      lightMin: formData.lightLower ? Number(formData.lightLower) : undefined
-    })
-    
+    // 构造提交数据
+    const submitData = {
+      userId: user.userId,
+      temperature: formData.value.temperature ? Number(formData.value.temperature) : null,
+      humidity: formData.value.humidity ? Number(formData.value.humidity) : null,
+      lightUpper: formData.value.lightUpper ? Number(formData.value.lightUpper) : null,
+      lightLower: formData.value.lightLower ? Number(formData.value.lightLower) : null
+    }
+
+    await thresholdAPI.updateThresholds(submitData)
     uni.showToast({
-      title: '设置已保存',
+      title: '设置成功',
       icon: 'success'
     })
+    
+    // 刷新当前阈值显示
+    await fetchCurrentThresholds()
   } catch (error) {
-    console.error('更新阈值设置失败：', error)
+    console.error('提交失败：', error)
+    uni.showToast({
+      title: error.message || '提交失败',
+      icon: 'none'
+    })
   }
 }
 
 const handleClear = () => {
   // 清空所有输入值
-  formData.temperature = ''
-  formData.humidity = ''
-  formData.lightUpper = ''
-  formData.lightLower = ''
+  formData.value.temperature = null
+  formData.value.humidity = null
+  formData.value.lightUpper = null
+  formData.value.lightLower = null
   
   // 显示提示
   uni.showToast({
@@ -198,14 +284,58 @@ onMounted(() => {
   padding: 20px;
 }
 
-.settings-section {
+.threshold-section {
+  margin-bottom: 30px;
+
   .section-title {
     font-size: 18px;
     font-weight: 600;
     color: #333;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     padding-left: 12px;
     border-left: 4px solid #4a6fee;
+  }
+}
+
+.current-thresholds {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.threshold-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .card-title {
+      margin-left: 8px;
+      font-size: 16px;
+      color: #666;
+    }
+  }
+
+  .card-value {
+    display: flex;
+    align-items: baseline;
+
+    .value {
+      font-size: 32px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .unit {
+      margin-left: 4px;
+      font-size: 16px;
+      color: #666;
+    }
   }
 }
 

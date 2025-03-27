@@ -56,6 +56,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { authAPI } from '@/api'
+import { setUserInfo } from '@/store/user'
 
 const formData = reactive({
   username: '',
@@ -97,8 +98,13 @@ const handleLogin = async () => {
   
   try {
     const res = await authAPI.login(formData.username, formData.password)
-    // 保存token
-    uni.setStorageSync('token', res.data.token)
+    
+    // 保存用户信息
+    setUserInfo({
+      token: res.data.token,
+      username: res.data.username,
+      userId: parseInt(res.data.id)
+    })
     
     // 跳转到主页
     uni.redirectTo({
@@ -106,6 +112,10 @@ const handleLogin = async () => {
     })
   } catch (error) {
     console.error('登录失败：', error)
+    uni.showToast({
+      title: error.message || '登录失败',
+      icon: 'none'
+    })
   } finally {
     isLoading.value = false
   }

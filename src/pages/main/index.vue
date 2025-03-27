@@ -3,9 +3,12 @@
     <!-- 顶部栏 -->
     <view class="header">
       <text class="system-title">智能楼宇环境监控系统</text>
-      <view class="logout" @click="handleLogout">
-        <uni-icons type="poweroff" size="18" color="#666"></uni-icons>
-        <text class="logout-text">退出登录</text>
+      <view class="header-right">
+        <text class="username">[{{ user.username }}]</text>
+        <view class="logout-btn" @click="handleLogout">
+          <uni-icons type="poweroff" size="16" color="#666"></uni-icons>
+          <text>退出登录</text>
+        </view>
       </view>
     </view>
     
@@ -42,6 +45,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { user, clearUserInfo } from '@/store/user'
 import DataDisplay from '@/components/DataDisplay.vue'
 import ThresholdSettings from '@/components/ThresholdSettings.vue'
 import ManualControl from '@/components/ManualControl.vue'
@@ -67,6 +71,9 @@ const handleLogout = () => {
     content: '确定要退出登录吗？',
     success: (res) => {
       if (res.confirm) {
+        // 清除用户信息
+        clearUserInfo()
+        // 跳转到登录页
         uni.redirectTo({
           url: '/pages/login/index'
         })
@@ -85,39 +92,52 @@ const handleLogout = () => {
 }
 
 .header {
-  height: 60px;
-  background: #fff;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  position: relative;
-  z-index: 100;
+  align-items: center;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   
   .system-title {
     font-size: 20px;
     font-weight: 600;
     color: #333;
-    letter-spacing: 1px;
   }
   
-  .logout {
+  .header-right {
     display: flex;
     align-items: center;
-    cursor: pointer;
-    padding: 8px 16px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    gap: 16px;
     
-    &:hover {
-      background-color: #f5f7fa;
-    }
-    
-    .logout-text {
-      margin-left: 6px;
+    .username {
       font-size: 14px;
       color: #666;
+      padding: 4px 8px;
+      background: #f5f7fa;
+      border-radius: 4px;
+    }
+    
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      color: #666;
+      background: #f5f7fa;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: #e6e8eb;
+        color: #333;
+      }
+      
+      &:active {
+        transform: scale(0.98);
+      }
     }
   }
 }
