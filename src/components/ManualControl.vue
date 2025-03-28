@@ -127,6 +127,7 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
 import { deviceAPI } from '@/api'
+import { user } from '@/store/user'
 
 // 初始状态
 const initialStatus = ref({
@@ -213,7 +214,9 @@ const handleSubmit = async () => {
   isLoading.value = true
   try {
     // 构造只包含修改过的设备状态的数据
-    const submitData = {}
+    const submitData = {
+      userId: user.userId  // 添加用户ID
+    }
     Object.keys(modifiedDevices).forEach(key => {
       if (modifiedDevices[key]) {
         submitData[key] = deviceStatus[key]
