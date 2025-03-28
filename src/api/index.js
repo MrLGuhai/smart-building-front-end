@@ -84,29 +84,29 @@ export const environmentAPI = {
 export const deviceAPI = {
   // 获取设备状态
   getStatus: () => {
-    return request('/devices/status', {
+    return request('/device/status', {
       method: 'GET'
     })
   },
   
   // 获取设备控制状态
   getControlStatus: () => {
-    return request('/devices/control', {
+    return request('/device/control', {
       method: 'GET'
     })
   },
   
   // 更新设备控制状态
   updateControl: (controlData) => {
-    return request('/devices/control', {
-      method: 'POST',
+    return request('/device/control', {
+      method: 'PUT',
       data: controlData
     })
   },
   
   // 获取设备控制记录
   getControlRecords: (deviceType) => {
-    return request('/devices/control/records', {
+    return request('/device/control/records', {
       method: 'GET',
       data: { deviceType }
     })

@@ -146,6 +146,15 @@ const deviceStatus = reactive({
   emergencyDoor: false
 })
 
+// 记录修改过的设备
+const modifiedDevices = reactive({
+  warningLight: false,
+  fillLight: false,
+  exhaustFan: false,
+  alarm: false,
+  emergencyDoor: false
+})
+
 // 判断是否有更改
 const hasChanges = ref(false)
 const isLoading = ref(false)
@@ -162,6 +171,7 @@ const checkChanges = () => {
 const resetStatus = () => {
   Object.keys(deviceStatus).forEach(key => {
     deviceStatus[key] = initialStatus.value[key]
+    modifiedDevices[key] = false // 重置修改记录
   })
   hasChanges.value = false
   uni.showToast({
@@ -178,6 +188,7 @@ const fetchInitialStatus = async () => {
     initialStatus.value = { ...res.data }
     Object.keys(deviceStatus).forEach(key => {
       deviceStatus[key] = res.data[key]
+      modifiedDevices[key] = false // 初始化修改记录
     })
   } catch (error) {
     console.error('获取设备状态失败：', error)
@@ -191,6 +202,7 @@ const fetchInitialStatus = async () => {
 // 处理设备控制
 const handleDeviceControl = (device, status) => {
   deviceStatus[device] = status
+  modifiedDevices[device] = true // 标记该设备已被修改
   checkChanges()
 }
 
@@ -200,10 +212,22 @@ const handleSubmit = async () => {
   
   isLoading.value = true
   try {
-    await deviceAPI.updateControl(deviceStatus)
+    // 构造只包含修改过的设备状态的数据
+    const submitData = {}
+    Object.keys(modifiedDevices).forEach(key => {
+      if (modifiedDevices[key]) {
+        submitData[key] = deviceStatus[key]
+      }
+    })
+
+    await deviceAPI.updateControl(submitData)
     
     // 更新初始状态
     initialStatus.value = { ...deviceStatus }
+    // 重置修改记录
+    Object.keys(modifiedDevices).forEach(key => {
+      modifiedDevices[key] = false
+    })
     hasChanges.value = false
     
     uni.showToast({
@@ -212,6 +236,10 @@ const handleSubmit = async () => {
     })
   } catch (error) {
     console.error('提交设备控制失败：', error)
+    uni.showToast({
+      title: error.message || '提交失败',
+      icon: 'none'
+    })
   } finally {
     isLoading.value = false
   }
