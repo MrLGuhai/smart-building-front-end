@@ -89,13 +89,6 @@ export const deviceAPI = {
     })
   },
   
-  // 获取设备控制状态
-  getControlStatus: () => {
-    return request('/device/control', {
-      method: 'GET'
-    })
-  },
-  
   // 更新设备控制状态
   updateControl: (controlData) => {
     return request('/device/control', {

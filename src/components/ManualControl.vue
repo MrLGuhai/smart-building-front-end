@@ -184,8 +184,10 @@ const resetStatus = () => {
 // 获取初始状态
 const fetchInitialStatus = async () => {
   try {
-    const res = await deviceAPI.getControlStatus()
+    const res = await deviceAPI.getStatus()
     // 更新初始状态和当前状态
+    // ...是JavaScript对象的扩展运算符，用于将一个对象的属性复制到另一个对象中。
+    // 它会创建一个新对象，而不是直接引用源对象。
     initialStatus.value = { ...res.data }
     Object.keys(deviceStatus).forEach(key => {
       deviceStatus[key] = res.data[key]

@@ -163,6 +163,9 @@ const currentThresholds = ref({
   lightLower: null
 })
 
+// 加载状态
+const isLoading = ref(false)
+
 // 表单数据
 const formData = ref({
   temperature: null,
@@ -207,56 +210,127 @@ const isFormValid = computed(() => {
   return hasInput
 })
 
-// 提交表单
-const handleSubmit = async () => {
-  // 验证光照强度上下限
-  if (formData.value.lightUpper !== null && formData.value.lightLower !== null) {
-    const upperLimit = Number(formData.value.lightUpper)
-    const lowerLimit = Number(formData.value.lightLower)
-    
-    if (upperLimit <= lowerLimit) {
-      uni.showToast({
-        title: '光照强度上限必须大于下限',
-        icon: 'none'
-      })
-      return
+// 验证表单
+const validateForm = computed(() => {
+  // 检查是否有任何输入
+  const hasInput = Object.values(formData.value).some(value => value !== null && value !== '')
+  if (!hasInput) {
+    return {
+      isValid: false,
+      message: '请至少设置一项阈值'
     }
   }
 
-  // 检查是否有输入
-  if (Object.values(formData.value).every(v => v === null)) {
+  // 检查光强上下限
+  const lightUpper = formData.value.lightUpper
+  const lightLower = formData.value.lightLower
+  
+  // 如果设置了上限，需要与当前下限比较
+  if (lightUpper !== null && lightUpper !== '') {
+    const upper = Number(lightUpper)
+    const currentLower = Number(currentThresholds.value.lightLower)
+    if (currentLower && upper <= currentLower) {
+      return {
+        isValid: false,
+        message: '光强上限必须大于当前下限'
+      }
+    }
+  }
+
+  // 如果设置了下限，需要与当前上限比较
+  if (lightLower !== null && lightLower !== '') {
+    const lower = Number(lightLower)
+    const currentUpper = Number(currentThresholds.value.lightUpper)
+    if (currentUpper && lower >= currentUpper) {
+      return {
+        isValid: false,
+        message: '光强下限必须小于当前上限'
+      }
+    }
+  }
+
+  // 如果同时设置了上下限，需要验证它们之间的关系
+  if (lightUpper !== null && lightUpper !== '' && lightLower !== null && lightLower !== '') {
+    const upper = Number(lightUpper)
+    const lower = Number(lightLower)
+    if (upper <= lower) {
+      return {
+        isValid: false,
+        message: '光强上限必须大于下限'
+      }
+    }
+  }
+
+  return {
+    isValid: true,
+    message: ''
+  }
+})
+
+// 提交表单
+const handleSubmit = async () => {
+  if (isLoading.value) return
+  
+  const validation = validateForm.value
+  if (!validation.isValid) {
     uni.showToast({
-      title: '请至少设置一项阈值',
+      title: validation.message,
       icon: 'none'
     })
     return
   }
 
+  isLoading.value = true
   try {
-    // 构造提交数据
+    // 构造提交数据，只包含非空值
     const submitData = {
-      userId: user.userId,
-      temperature: formData.value.temperature ? Number(formData.value.temperature) : null,
-      humidity: formData.value.humidity ? Number(formData.value.humidity) : null,
-      lightUpper: formData.value.lightUpper ? Number(formData.value.lightUpper) : null,
-      lightLower: formData.value.lightLower ? Number(formData.value.lightLower) : null
+      userId: user.userId
+    }
+    
+    // 处理光强阈值
+    if (formData.value.lightUpper !== null && formData.value.lightUpper !== '') {
+      submitData.lightUpper = Number(formData.value.lightUpper)
+    }
+    if (formData.value.lightLower !== null && formData.value.lightLower !== '') {
+      submitData.lightLower = Number(formData.value.lightLower)
+    }
+    
+    // 处理其他阈值
+    if (formData.value.temperature !== null && formData.value.temperature !== '') {
+      submitData.temperature = Number(formData.value.temperature)
+    }
+    if (formData.value.humidity !== null && formData.value.humidity !== '') {
+      submitData.humidity = Number(formData.value.humidity)
     }
 
     await thresholdAPI.updateThresholds(submitData)
+    
+    // 重置表单
+    resetForm()
+    
     uni.showToast({
-      title: '设置成功',
+      title: '阈值设置成功',
       icon: 'success'
     })
-    
     // 刷新当前阈值显示
     await fetchCurrentThresholds()
   } catch (error) {
-    console.error('提交失败：', error)
+    console.error('设置阈值失败：', error)
     uni.showToast({
-      title: error.message || '提交失败',
+      title: error.message || '设置失败',
       icon: 'none'
     })
+  } finally {
+    isLoading.value = false
   }
+}
+
+// 重置表单
+const resetForm = () => {
+  formData.value.temperature = null
+  formData.value.humidity = null
+  formData.value.lightUpper = null
+  formData.value.lightLower = null
 }
 
 const handleClear = () => {
