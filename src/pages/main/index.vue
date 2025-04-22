@@ -25,6 +25,19 @@
           <uni-icons :type="item.icon" size="20" :color="currentMenuIndex === index ? '#4a6fee' : '#666'"></uni-icons>
           <text class="menu-text">{{ item.name }}</text>
         </view>
+        
+        <!-- 历史数据子菜单 -->
+        <view v-if="menuItems[currentMenuIndex].subItems" class="sub-menu">
+          <view 
+            v-for="(subItem, subIndex) in menuItems[currentMenuIndex].subItems" 
+            :key="subIndex"
+            class="sub-menu-item"
+            :class="{'sub-menu-item-active': currentSubMenuIndex === subIndex}"
+            @click="handleSubMenuClick(subIndex)"
+          >
+            <text class="sub-menu-text">{{ subItem.name }}</text>
+          </view>
+        </view>
       </view>
       
       <!-- 主内容区域 -->
@@ -36,7 +49,9 @@
           <DataDisplay v-if="currentMenuIndex === 0" />
           <ThresholdSettings v-if="currentMenuIndex === 1" />
           <ManualControl v-if="currentMenuIndex === 2" />
-          <!-- 其他页面的内容将在后续添加 -->
+          <EnvironmentHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 0" />
+          <ControlHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 1" />
+          <AlarmHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 2" />
         </view>
       </view>
     </view>
@@ -49,20 +64,43 @@ import { user, clearUserInfo } from '@/store/user'
 import DataDisplay from '@/components/DataDisplay.vue'
 import ThresholdSettings from '@/components/ThresholdSettings.vue'
 import ManualControl from '@/components/ManualControl.vue'
+import EnvironmentHistory from '@/components/EnvironmentHistory.vue'
+import ControlHistory from '@/components/ControlHistory.vue'
+import AlarmHistory from '@/components/AlarmHistory.vue'
 
 const menuItems = [
   { name: '数据展示', icon: 'list' },
   { name: '阈值设置', icon: 'gear' },
   { name: '手动控制', icon: 'paperplane' },
-  { name: '历史数据', icon: 'search' }
+  { 
+    name: '历史数据', 
+    icon: 'search',
+    subItems: [
+      { name: '环境数据', component: 'EnvironmentHistory' },
+      { name: '控制记录', component: 'ControlHistory' },
+      { name: '告警记录', component: 'AlarmHistory' }
+    ]
+  }
 ]
 
 const currentMenuIndex = ref(0)
+const currentSubMenuIndex = ref(0)
 
-const currentMenuItem = computed(() => menuItems[currentMenuIndex.value])
+const currentMenuItem = computed(() => {
+  const item = menuItems[currentMenuIndex.value]
+  if (item.subItems) {
+    return item.subItems[currentSubMenuIndex.value]
+  }
+  return item
+})
 
 const handleMenuClick = (index) => {
   currentMenuIndex.value = index
+  currentSubMenuIndex.value = 0
+}
+
+const handleSubMenuClick = (index) => {
+  currentSubMenuIndex.value = index
 }
 
 const handleLogout = () => {
@@ -206,6 +244,39 @@ const handleLogout = () => {
     min-height: calc(100% - 60px);
     padding: 24px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.sub-menu {
+  margin-left: 20px;
+  padding: 10px 0;
+  
+  .sub-menu-item {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+    
+    &:hover {
+      background-color: #f5f7fa;
+    }
+    
+    &-active {
+      background-color: #f0f5ff;
+      border-right: 3px solid #4a6fee;
+      
+      .sub-menu-text {
+        color: #4a6fee;
+        font-weight: 500;
+      }
+    }
+    
+    .sub-menu-text {
+      font-size: 14px;
+      color: #666;
+    }
   }
 }
 </style> 

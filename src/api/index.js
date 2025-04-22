@@ -77,6 +77,14 @@ export const environmentAPI = {
     return request('/environment/current', {
       method: 'GET'
     })
+  },
+  
+  // 获取历史环境数据
+  getHistoryData: (params = { limit: 200 }) => {
+    return request('/environment/history', {
+      method: 'GET',
+      data: params
+    })
   }
 }
 

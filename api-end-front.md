@@ -121,6 +121,40 @@ http://localhost:8080
 }
 ```
 
+### 2. 获取历史环境数据
+- **接口URL**: `/environment/history`
+- **请求方式**: GET
+- **请求参数**:
+  - `limit`: 记录数量（可选，默认200）
+  - `startTime`: 开始时间（可选，格式：yyyy-MM-dd HH:mm:ss）
+  - `endTime`: 结束时间（可选，格式：yyyy-MM-dd HH:mm:ss）
+- **成功响应**:
+```json
+{
+    "code": 200,
+    "message": "获取成功",
+    "data": {
+        "records": [
+            {
+                "id": 1,
+                "temperature": 25.5,
+                "humidity": 60,
+                "light": 800,
+                "createTime": "2024-03-21T10:00:00"
+            }
+        ]
+    }
+}
+```
+- **失败响应**:
+```json
+{
+    "code": 500,
+    "message": "获取历史环境数据失败",
+    "data": null
+}
+```
+
 ## 设备控制接口
 
 ### 1. 获取设备状态
