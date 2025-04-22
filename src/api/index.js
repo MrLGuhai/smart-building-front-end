@@ -129,5 +129,23 @@ export const thresholdAPI = {
       method: 'POST',
       data: thresholdData
     })
+  },
+  
+  // 获取阈值修改记录
+  getThresholdRecords: (params = { limit: 100 }) => {
+    return request('/thresholds/records', {
+      method: 'GET',
+      data: params
+    })
+  }
+}
+
+export const alarmAPI = {
+  // 获取历史告警记录
+  getAlarmRecords: (params = { limit: 100 }) => {
+    return request('/alarm/records', {
+      method: 'GET',
+      data: params
+    })
   }
 } 

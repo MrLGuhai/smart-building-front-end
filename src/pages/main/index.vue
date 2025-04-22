@@ -50,8 +50,9 @@
           <ThresholdSettings v-if="currentMenuIndex === 1" />
           <ManualControl v-if="currentMenuIndex === 2" />
           <EnvironmentHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 0" />
-          <ControlHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 1" />
-          <AlarmHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 2" />
+          <ThresholdHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 1" />
+          <ControlHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 2" />
+          <AlarmHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 3" />
         </view>
       </view>
     </view>
@@ -67,6 +68,7 @@ import ManualControl from '@/components/ManualControl.vue'
 import EnvironmentHistory from '@/components/EnvironmentHistory.vue'
 import ControlHistory from '@/components/ControlHistory.vue'
 import AlarmHistory from '@/components/AlarmHistory.vue'
+import ThresholdHistory from '@/components/ThresholdHistory.vue'
 
 const menuItems = [
   { name: '数据展示', icon: 'list' },
@@ -77,6 +79,7 @@ const menuItems = [
     icon: 'search',
     subItems: [
       { name: '环境数据', component: 'EnvironmentHistory' },
+      { name: '阈值修改记录', component: 'ThresholdHistory' },
       { name: '控制记录', component: 'ControlHistory' },
       { name: '告警记录', component: 'AlarmHistory' }
     ]

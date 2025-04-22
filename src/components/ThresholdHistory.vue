@@ -1,5 +1,5 @@
 <template>
-  <view class="alarm-history">
+  <view class="threshold-history">
     <!-- 搜索表单 -->
     <view class="search-form">
       <view class="form-content">
@@ -13,16 +13,16 @@
           />
         </view>
 
-        <view class="form-item alarm-type-item">
-          <text class="label">告警类型</text>
+        <view class="form-item threshold-type-item">
+          <text class="label">阈值类型</text>
           <picker 
-            :range="alarmTypes" 
+            :range="thresholdTypes" 
             range-key="label"
-            :value="alarmTypeIndex"
-            @change="handleAlarmTypeChange"
+            :value="thresholdTypeIndex"
+            @change="handleThresholdTypeChange"
           >
             <view class="picker">
-              {{ searchParams.alarmType ? getAlarmTypeName(searchParams.alarmType) : '请选择告警类型' }}
+              {{ searchParams.thresholdType ? getThresholdTypeName(searchParams.thresholdType) : '请选择阈值类型' }}
             </view>
           </picker>
         </view>
@@ -65,10 +65,11 @@
       <view class="table-header">
         <text class="header-item index">序号</text>
         <text class="header-item record-id">记录ID</text>
-        <text class="header-item alarm-type">告警类型</text>
-        <text class="header-item actual-value">实际值</text>
-        <text class="header-item threshold">阈值</text>
-        <text class="header-item time">告警时间</text>
+        <text class="header-item threshold-type">阈值类型</text>
+        <text class="header-item old-value">原始值</text>
+        <text class="header-item new-value">修改值</text>
+        <text class="header-item operator">操作人</text>
+        <text class="header-item time">修改时间</text>
       </view>
 
       <scroll-view 
@@ -77,17 +78,18 @@
       >
         <view 
           class="table-row"
-          v-for="(record, index) in alarmRecords" 
+          v-for="(record, index) in thresholdRecords" 
           :key="record.id"
         >
           <text class="cell index">{{ index + 1 }}</text>
           <text class="cell record-id">{{ record.id }}</text>
-          <text class="cell alarm-type">{{ getAlarmTypeName(record.alarmType) }}</text>
-          <text class="cell actual-value">{{ record.actualValue }}</text>
-          <text class="cell threshold">{{ record.thresholdValue }}</text>
+          <text class="cell threshold-type">{{ getThresholdTypeName(record.thresholdType) }}</text>
+          <text class="cell old-value">{{ formatValue(record.oldValue, record.thresholdType) }}</text>
+          <text class="cell new-value">{{ formatValue(record.newValue, record.thresholdType) }}</text>
+          <text class="cell operator">{{ record.userId }}</text>
           <text class="cell time">{{ formatDateTime(new Date(record.createTime)) }}</text>
         </view>
-        <view v-if="alarmRecords.length === 0" class="empty-tip">
+        <view v-if="thresholdRecords.length === 0" class="empty-tip">
           暂无数据
         </view>
       </scroll-view>
@@ -97,51 +99,64 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { alarmAPI } from '@/api'
+import { thresholdAPI } from '@/api'
 
 // 当前时间
 const now = ref(Date.now())
 
-// 告警类型选项
-const alarmTypes = [
+// 阈值类型选项
+const thresholdTypes = [
   { value: null, label: '全部' },
-  { value: 1, label: '温度过高' },
-  { value: 2, label: '温度回归正常' },
-  { value: 3, label: '湿度过高' },
-  { value: 4, label: '湿度回归正常' },
-  { value: 5, label: '光照过强' },
-  { value: 6, label: '光照过弱' }
+  { value: 1, label: '温度阈值' },
+  { value: 2, label: '湿度阈值' },
+  { value: 3, label: '光照上限' },
+  { value: 4, label: '光照下限' }
 ]
 
 // 搜索参数
 const searchParams = ref({
-  alarmType: null,
+  thresholdType: null,
   startTime: '',
   endTime: '',
   limit: 100
 })
 
-// 告警类型索引
-const alarmTypeIndex = computed(() => {
-  if (searchParams.value.alarmType === null) return 0
-  return alarmTypes.findIndex(item => item.value === searchParams.value.alarmType)
+// 阈值类型索引
+const thresholdTypeIndex = computed(() => {
+  if (searchParams.value.thresholdType === null) return 0
+  return thresholdTypes.findIndex(item => item.value === searchParams.value.thresholdType)
 })
 
-// 告警记录数据
-const alarmRecords = ref([])
+// 阈值修改记录数据
+const thresholdRecords = ref([])
 const loading = ref(false)
 
-// 获取告警类型名称
-const getAlarmTypeName = (type) => {
+// 获取阈值类型名称
+const getThresholdTypeName = (type) => {
   if (type === null) return '全部'
-  const alarm = alarmTypes.find(item => item.value === type)
-  return alarm ? alarm.label : '未知类型'
+  const threshold = thresholdTypes.find(item => item.value === type)
+  return threshold ? threshold.label : '未知类型'
 }
 
-// 处理告警类型选择
-const handleAlarmTypeChange = (e) => {
+// 格式化阈值数值
+const formatValue = (value, type) => {
+  switch (type) {
+    case 1: // 温度
+      return `${value}°C`
+    case 2: // 湿度
+      return `${value}%`
+    case 3: // 光照上限
+    case 4: // 光照下限
+      return `${value}lx`
+    default:
+      return value
+  }
+}
+
+// 处理阈值类型选择
+const handleThresholdTypeChange = (e) => {
   const index = e.detail.value
-  searchParams.value.alarmType = alarmTypes[index].value
+  searchParams.value.thresholdType = thresholdTypes[index].value
 }
 
 // 格式化日期时间
@@ -206,8 +221,8 @@ const handleEndTimeChange = (timestamp) => {
   }
 }
 
-// 获取告警记录
-const fetchAlarmRecords = async () => {
+// 获取阈值修改记录
+const fetchThresholdRecords = async () => {
   try {
     loading.value = true
     // 构建请求参数
@@ -216,8 +231,8 @@ const fetchAlarmRecords = async () => {
     }
     
     // 只有在有值且不为null时才添加参数
-    if (searchParams.value.alarmType !== null) {
-      params.alarmType = searchParams.value.alarmType
+    if (searchParams.value.thresholdType !== null) {
+      params.thresholdType = searchParams.value.thresholdType
     }
     if (searchParams.value.startTime) {
       params.startTime = searchParams.value.startTime
@@ -226,29 +241,29 @@ const fetchAlarmRecords = async () => {
       params.endTime = searchParams.value.endTime
     }
     
-    const res = await alarmAPI.getAlarmRecords(params)
-    console.log('告警记录响应数据:', res) // 添加日志查看响应数据结构
+    const res = await thresholdAPI.getThresholdRecords(params)
+    console.log('阈值修改记录响应数据:', res)
     
     if (res.code === 200) {
       // 根据实际的数据结构进行解析
       if (res.data && res.data.records) {
-        alarmRecords.value = res.data.records
+        thresholdRecords.value = res.data.records
       } else if (Array.isArray(res.data)) {
-        alarmRecords.value = res.data
+        thresholdRecords.value = res.data
       } else {
-        alarmRecords.value = []
+        thresholdRecords.value = []
         console.warn('未能识别的数据结构:', res.data)
       }
     } else {
       uni.showToast({
-        title: res.message || '获取告警记录失败',
+        title: res.message || '获取阈值修改记录失败',
         icon: 'none'
       })
     }
   } catch (error) {
-    console.error('获取告警记录失败:', error)
+    console.error('获取阈值修改记录失败:', error)
     uni.showToast({
-      title: '获取告警记录失败',
+      title: '获取阈值修改记录失败',
       icon: 'none'
     })
   } finally {
@@ -270,17 +285,17 @@ const handleSearch = async () => {
     return
   }
   
-  await fetchAlarmRecords()
+  await fetchThresholdRecords()
 }
 
 // 组件挂载时获取数据
 onMounted(() => {
-  fetchAlarmRecords()
+  fetchThresholdRecords()
 })
 </script>
 
 <style lang="scss" scoped>
-.alarm-history {
+.threshold-history {
   padding: 20rpx;
   
   .search-form {
@@ -309,8 +324,8 @@ onMounted(() => {
           }
         }
         
-        // 告警类型选择器样式
-        &.alarm-type-item {
+        // 阈值类型选择器样式
+        &.threshold-type-item {
           flex: 0 0 300rpx;
           
           .picker {
@@ -453,12 +468,16 @@ onMounted(() => {
         flex: 0.8;
       }
       
-      &.alarm-type {
+      &.threshold-type {
         flex: 1.2;
       }
       
-      &.actual-value,
-      &.threshold {
+      &.old-value,
+      &.new-value {
+        flex: 0.8;
+      }
+      
+      &.operator {
         flex: 0.8;
       }
       
