@@ -216,10 +216,15 @@ http://localhost:8080
 }
 ```
 
-### 3. 获取设备控制记录
+### 3. 获取历史控制记录
 - **接口URL**: `/device/control/records`
 - **请求方式**: GET
-- **请求参数**: 无
+- **请求参数**:
+  - `limit`: 记录数量（可选，默认100）
+  - `deviceType`: 设备类型（可选，1:警告灯, 2:补光灯, 3:排气扇, 4:报警器, 5:紧急门）
+  - `userId`: 用户ID（可选）
+  - `startTime`: 开始时间（可选，格式：yyyy-MM-dd HH:mm:ss）
+  - `endTime`: 结束时间（可选，格式：yyyy-MM-dd HH:mm:ss）
 - **成功响应**:
 ```json
 {
@@ -235,6 +240,14 @@ http://localhost:8080
             "createTime": "2024-03-21T10:00:00"
         }
     ]
+}
+```
+- **失败响应**:
+```json
+{
+    "code": 500,
+    "message": "获取控制记录失败",
+    "data": null
 }
 ```
 

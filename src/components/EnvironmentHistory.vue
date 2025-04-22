@@ -1,37 +1,39 @@
 <template>
   <view class="environment-history">
     <view class="search-container">
-      <view class="search-row">
-        <view class="search-item">
-          <text class="label">记录数量：</text>
-          <input 
-            type="number" 
-            v-model="searchParams.limit" 
-            class="input" 
-            placeholder="默认200条"
-          />
+      <view class="search-form">
+        <view class="form-content">
+          <view class="form-item limit-item">
+            <text class="label">记录数量：</text>
+            <input 
+              type="number" 
+              v-model="searchParams.limit" 
+              class="input" 
+              placeholder="默认200条"
+            />
+          </view>
+          <view class="form-item">
+            <text class="label">开始时间：</text>
+            <uni-datetime-picker
+              type="datetime"
+              v-model="searchParams.startTime"
+              :end="now"
+              return-type="timestamp"
+              @change="handleStartTimeChange"
+            />
+          </view>
+          <view class="form-item">
+            <text class="label">结束时间：</text>
+            <uni-datetime-picker
+              type="datetime"
+              v-model="searchParams.endTime"
+              :end="now"
+              return-type="timestamp"
+              @change="handleEndTimeChange"
+            />
+          </view>
+          <button class="search-btn" @click="handleSearch">查询</button>
         </view>
-        <view class="search-item">
-          <text class="label">开始时间：</text>
-          <uni-datetime-picker
-            type="datetime"
-            v-model="searchParams.startTime"
-            :end="now"
-            return-type="timestamp"
-            @change="handleStartTimeChange"
-          />
-        </view>
-        <view class="search-item">
-          <text class="label">结束时间：</text>
-          <uni-datetime-picker
-            type="datetime"
-            v-model="searchParams.endTime"
-            :end="now"
-            return-type="timestamp"
-            @change="handleEndTimeChange"
-          />
-        </view>
-        <button class="search-btn" @click="handleSearch">查询</button>
       </view>
     </view>
     
@@ -527,66 +529,117 @@ onBeforeUnmount(() => {
     margin-bottom: 20px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
     
-    .search-row {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
+    .search-form {
+      background-color: #fff;
+      border-radius: 12rpx;
+      padding: 24rpx;
+      margin-bottom: 24rpx;
+      box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
       
-      .search-item {
+      .form-content {
         display: flex;
+        flex-wrap: nowrap;
         align-items: center;
+        gap: 20rpx;
         
-        .label {
-          white-space: nowrap;
-          margin-right: 8px;
-          color: #333;
-        }
-        
-        .input {
-          width: 180px;
-          height: 32px;
-          border: 1px solid #dcdfe6;
-          border-radius: 4px;
-          padding: 0 12px;
-          font-size: 14px;
+        .form-item {
+          display: flex;
+          align-items: center;
           
-          &:focus {
-            border-color: #409eff;
-            outline: none;
-          }
-        }
-        
-        :deep(.uni-datetime-picker) {
-          .uni-datetime-picker-timebox {
-            width: 180px;
-            height: 32px;
-            border: 1px solid #dcdfe6;
-            border-radius: 4px;
+          // 记录数量输入框样式
+          &.limit-item {
+            flex: 0 0 200rpx;
             
-            &:focus {
-              border-color: #409eff;
+            .input {
+              width: 120rpx;
+            }
+          }
+          
+          // 时间选择器样式
+          &:has(.uni-datetime-picker) {
+            flex: 0 0 420rpx;
+          }
+          
+          :deep(.uni-datetime-picker) {
+            flex: 1;
+            width: 100%;
+            
+            .uni-datetime-picker-timebox {
+              width: 320rpx;
+              height: 68rpx;
+              line-height: 68rpx;
+              padding: 0 16rpx;
+              background-color: #f8f9fc;
+              border-radius: 6rpx;
+              font-size: 26rpx;
+              border: 1rpx solid #eaecf3;
+              transition: all 0.3s ease;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              
+              &:hover {
+                border-color: #4a6fee;
+                background-color: #f5f7ff;
+              }
+              
+              .uni-datetime-picker-time {
+                line-height: 66rpx;
+                height: 66rpx;
+                color: #333;
+              }
+            }
+          }
+          
+          .label {
+            font-size: 26rpx;
+            color: #333;
+            margin-right: 12rpx;
+            white-space: nowrap;
+            font-weight: 500;
+          }
+          
+          .input {
+            height: 68rpx;
+            line-height: 68rpx;
+            padding: 0 16rpx;
+            background-color: #f8f9fc;
+            border-radius: 6rpx;
+            font-size: 26rpx;
+            color: #333;
+            border: 1rpx solid #eaecf3;
+            transition: all 0.3s ease;
+            text-align: center;
+            
+            &:hover, &:focus {
+              border-color: #4a6fee;
+              background-color: #f5f7ff;
             }
           }
         }
-      }
-      
-      .search-btn {
-        height: 32px;
-        padding: 0 16px;
-        background-color: #409eff;
-        color: #fff;
-        border-radius: 4px;
-        border: none;
-        cursor: pointer;
-        font-size: 14px;
         
-        &:hover {
-          background-color: #66b1ff;
-        }
-        
-        &:active {
-          background-color: #3a8ee6;
+        .search-btn {
+          margin-left: auto;
+          width: 120rpx;
+          height: 68rpx;
+          line-height: 68rpx;
+          text-align: center;
+          background-color: #4a6fee;
+          color: #fff;
+          border-radius: 6rpx;
+          font-size: 26rpx;
+          padding: 0;
+          transition: all 0.3s ease;
+          flex-shrink: 0;
+          
+          &:hover {
+            background-color: #3d5ed9;
+          }
+          
+          &[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
         }
       }
     }

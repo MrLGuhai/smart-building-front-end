@@ -106,10 +106,10 @@ export const deviceAPI = {
   },
   
   // 获取设备控制记录
-  getControlRecords: (deviceType) => {
+  getControlRecords: (params = { limit: 100 }) => {
     return request('/device/control/records', {
       method: 'GET',
-      data: { deviceType }
+      data: params
     })
   }
 }
