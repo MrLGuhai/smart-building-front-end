@@ -45,6 +45,10 @@
       <view class="chart-title">光照强度趋势</view>
       <canvas type="2d" id="lightChart" class="chart"></canvas>
     </view>
+    <view class="chart-container">
+      <view class="chart-title">烟雾浓度趋势</view>
+      <canvas type="2d" id="smokeChart" class="chart"></canvas>
+    </view>
   </view>
 </template>
 
@@ -68,13 +72,15 @@ const environmentData = ref({
   times: [],
   temperature: [],
   humidity: [],
-  light: []
+  light: [],
+  smoke: []
 })
 
 // 保存图表实例
 const charts = ref({
   tempHumidity: null,
-  light: null
+  light: null,
+  smoke: null
 })
 
 // 处理时间选择
@@ -163,7 +169,8 @@ const fetchHistoryData = async () => {
         times: records.map(record => formatDateTime(new Date(record.createTime))),
         temperature: records.map(record => record.temperature),
         humidity: records.map(record => record.humidity),
-        light: records.map(record => record.light)
+        light: records.map(record => record.light),
+        smoke: records.map(record => record.smoke)
       }
       // 更新图表
       initCharts()
@@ -419,7 +426,7 @@ const initLightChart = () => {
           type: 'value',
           name: '光照强度(lx)',
           nameTextStyle: {
-            color: '#ffd700',
+            color: '#FF9F43',
             fontSize: 12,
             align: 'left',
             padding: [0, 0, 0, 0]
@@ -434,7 +441,7 @@ const initLightChart = () => {
           axisLine: {
             show: true,
             lineStyle: {
-              color: '#ffd700',
+              color: '#FF9F43',
               width: 2
             }
           },
@@ -449,7 +456,7 @@ const initLightChart = () => {
             }
           },
           axisLabel: {
-            color: '#ffd700',
+            color: '#FF9F43',
             margin: 8,
             fontSize: 12
           }
@@ -460,10 +467,10 @@ const initLightChart = () => {
             type: 'line',
             data: environmentData.value.light,
             itemStyle: {
-              color: '#ffd700'
+              color: '#FF9F43'
             },
             lineStyle: {
-              width: 3  // 加粗线条
+              width: 3
             },
             showSymbol: false,
             smooth: true
@@ -474,11 +481,127 @@ const initLightChart = () => {
     })
 }
 
+// 初始化烟雾浓度图表
+const initSmokeChart = () => {
+  const query = uni.createSelectorQuery()
+  query.select('#smokeChart')
+    .fields({ node: true, size: true })
+    .exec((res) => {
+      if (!res[0] || !res[0].node) return
+      
+      const canvas = res[0].node
+      const ctx = canvas.getContext('2d')
+      
+      // 使用容器的实际宽度
+      const width = res[0].width
+      const height = 300 // 保持固定高度
+      const dpr = uni.getSystemInfoSync().pixelRatio
+      
+      canvas.width = width * dpr
+      canvas.height = height * dpr
+      ctx.scale(dpr, dpr)
+      
+      // 如果已有实例，先销毁
+      if (charts.value.smoke) {
+        charts.value.smoke.dispose()
+      }
+      
+      charts.value.smoke = echarts.init(canvas, null, {
+        width: width,
+        height: height,
+        devicePixelRatio: dpr
+      })
+      const option = {
+        animation: false,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross'
+          }
+        },
+        legend: {
+          data: ['烟雾浓度'],
+          top: 5,
+          left: 'center'
+        },
+        grid: {
+          left: 20,
+          right: 240,
+          bottom: 60,
+          top: 40,
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: environmentData.value.times,
+          show: false
+        },
+        yAxis: {
+          type: 'value',
+          name: '烟雾浓度(ppm)',
+          nameTextStyle: {
+            color: '#6C5CE7',
+            fontSize: 12,
+            align: 'left',
+            padding: [0, 0, 0, 0]
+          },
+          scale: true,
+          min: function(value) {
+            return Math.floor(value.min - 20);
+          },
+          max: function(value) {
+            return Math.ceil(value.max + 20);
+          },
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#6C5CE7',
+              width: 2
+            }
+          },
+          axisTick: {
+            show: true
+          },
+          splitLine: {
+            show: true,
+            lineStyle: {
+              type: 'dashed',
+              color: '#E5E5E5'
+            }
+          },
+          axisLabel: {
+            color: '#6C5CE7',
+            margin: 8,
+            fontSize: 12
+          }
+        },
+        series: [
+          {
+            name: '烟雾浓度',
+            type: 'line',
+            data: environmentData.value.smoke,
+            itemStyle: {
+              color: '#6C5CE7'
+            },
+            lineStyle: {
+              width: 3
+            },
+            showSymbol: false,
+            smooth: true
+          }
+        ]
+      }
+      charts.value.smoke.setOption(option)
+    })
+}
+
 // 初始化所有图表
 const initCharts = () => {
   setTimeout(() => {
     initTempHumidityChart()
     initLightChart()
+    initSmokeChart()
   }, 300)
 }
 
@@ -503,6 +626,9 @@ onDeactivated(() => {
   if (charts.value.light) {
     charts.value.light.dispose()
   }
+  if (charts.value.smoke) {
+    charts.value.smoke.dispose()
+  }
 })
 
 onBeforeUnmount(() => {
@@ -512,6 +638,9 @@ onBeforeUnmount(() => {
   }
   if (charts.value.light) {
     charts.value.light.dispose()
+  }
+  if (charts.value.smoke) {
+    charts.value.smoke.dispose()
   }
 })
 </script>

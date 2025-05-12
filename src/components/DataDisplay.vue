@@ -36,6 +36,17 @@
             <text class="unit">lx</text>
           </view>
         </view>
+
+        <view class="data-card">
+          <view class="card-header">
+            <uni-icons type="cloud" size="24" color="#4a6fee"></uni-icons>
+            <text class="card-title">烟雾浓度</text>
+          </view>
+          <view class="card-value">
+            <text class="value">{{ environmentData.smoke }}</text>
+            <text class="unit">ppm</text>
+          </view>
+        </view>
       </view>
     </view>
 
@@ -132,7 +143,8 @@ import { environmentAPI, deviceAPI } from '@/api'
 const environmentData = ref({
   temperature: 0,
   humidity: 0,
-  light: 0
+  light: 0,
+  smoke: 0
 })
 
 // 设备状态
@@ -156,7 +168,8 @@ const fetchEnvironmentData = async () => {
     environmentData.value = {
       temperature: res.data.temperature,
       humidity: res.data.humidity,
-      light: res.data.light
+      light: res.data.light,
+      smoke: res.data.smoke
     }
   } catch (error) {
     console.error('获取环境数据失败：', error)
