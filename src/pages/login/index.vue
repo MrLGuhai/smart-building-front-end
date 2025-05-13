@@ -29,7 +29,7 @@
         
         <view class="form-footer">
           <label class="remember-me">
-            <checkbox v-model="formData.remember" color="#6c8bef" style="transform:scale(0.7)" />
+            <checkbox v-model="rememberPassword" color="#6c8bef" style="transform:scale(0.7)" />
             <text>记住我</text>
           </label>
           <text class="forgot-password" @click="handleForgotPassword">忘记密码？</text>
@@ -57,6 +57,8 @@
 import { ref, reactive, computed } from 'vue'
 import { authAPI } from '@/api'
 import { setUserInfo } from '@/store/user'
+import { getPublicKey, rsaEncrypt } from '@/utils/rsa'
+
 
 const formData = reactive({
   username: '',
@@ -66,6 +68,7 @@ const formData = reactive({
 
 const showPassword = ref(false)
 const isLoading = ref(false)
+const rememberPassword = ref(false)
 
 const isFormValid = computed(() => {
   return formData.username.trim() && formData.password.trim()
@@ -97,23 +100,60 @@ const handleLogin = async () => {
   isLoading.value = true
   
   try {
-    const res = await authAPI.login(formData.username, formData.password)
-    
-    // 保存用户信息
-    setUserInfo({
-      token: res.data.token,
-      username: res.data.username,
-      userId: parseInt(res.data.id)
-    })
-    
-    // 跳转到主页
-    uni.redirectTo({
-      url: '/pages/main/index'
-    })
+    // 获取RSA公钥
+    const hasPublicKey = await getPublicKey()
+    if (!hasPublicKey) {
+      uni.showToast({
+        title: '获取加密密钥失败',
+        icon: 'none'
+      })
+      return
+    }
+
+    // RSA加密用户名和密码
+    const encryptedUsername = rsaEncrypt(formData.username)
+    const encryptedPassword = rsaEncrypt(formData.password)
+
+    // 调用登录接口
+    const res = await authAPI.login(encryptedUsername, encryptedPassword)
+
+    if (res.code === 200) {
+      // 保存用户信息
+      setUserInfo({
+        token: res.data.token,
+        username: res.data.username,
+        userId: parseInt(res.data.id)
+      })
+      
+      // 如果选择记住密码，保存到本地存储
+      if (rememberPassword.value) {
+        uni.setStorageSync('rememberedUser', {
+          username: formData.username,
+          password: formData.password
+        })
+      } else {
+        uni.removeStorageSync('rememberedUser')
+      }
+
+      uni.showToast({
+        title: res.data.message || '登录成功',
+        icon: 'none'
+      })
+
+      // 跳转到主页
+      uni.redirectTo({
+        url: '/pages/main/index'
+      })
+    } else {
+      uni.showToast({
+        title: res.data.message || '登录失败',
+        icon: 'none'
+      })
+    }
   } catch (error) {
-    console.error('登录失败：', error)
+    console.error('登录失败:', error)
     uni.showToast({
-      title: error.message || '登录失败',
+      title: '登录失败，请稍后重试',
       icon: 'none'
     })
   } finally {
@@ -134,6 +174,19 @@ const handleRegister = () => {
     url: '/pages/register/index'
   })
 }
+
+// 检查是否有记住的密码
+const checkRememberedUser = () => {
+  const rememberedUser = uni.getStorageSync('rememberedUser')
+  if (rememberedUser) {
+    formData.username = rememberedUser.username
+    formData.password = rememberedUser.password
+    rememberPassword.value = true
+  }
+}
+
+// 页面加载时检查记住的密码
+checkRememberedUser()
 </script>
 
 <style lang="scss" scoped>

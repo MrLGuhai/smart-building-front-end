@@ -58,6 +58,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { authAPI } from '@/api'
+import { getPublicKey, rsaEncrypt } from '@/utils/rsa'
 
 const formData = reactive({
   username: '',
@@ -111,7 +112,22 @@ const handleRegister = async () => {
   isLoading.value = true
   
   try {
-    await authAPI.register(formData.username, formData.password)
+    // 获取RSA公钥
+    const hasPublicKey = await getPublicKey()
+    if (!hasPublicKey) {
+      uni.showToast({
+        title: '获取加密密钥失败',
+        icon: 'none'
+      })
+      return
+    }
+
+    // RSA加密用户名和密码
+    const encryptedUsername = rsaEncrypt(formData.username)
+    const encryptedPassword = rsaEncrypt(formData.password)
+
+    // 调用注册接口
+    await authAPI.register(encryptedUsername, encryptedPassword)
     
     uni.showToast({
       title: '注册成功',
@@ -128,6 +144,10 @@ const handleRegister = async () => {
     
   } catch (error) {
     console.error('注册失败：', error)
+    uni.showToast({
+      title: '注册失败，请稍后重试',
+      icon: 'none'
+    })
   } finally {
     isLoading.value = false
   }

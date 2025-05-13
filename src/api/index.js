@@ -46,6 +46,13 @@ const request = async (url, options = {}) => {
 
 // 用户认证相关接口
 export const authAPI = {
+  // 获取RSA公钥
+  getPublicKey: () => {
+    return request('/auth/public-key', {
+      method: 'GET'
+    })
+  },
+
   // 登录
   login: (username, password) => {
     return request('/auth/login', {
