@@ -144,6 +144,14 @@ export const thresholdAPI = {
       method: 'GET',
       data: params
     })
+  },
+
+  // 获取阈值分析数据
+  getAnalysis(params) {
+    return request('/thresholds/analysis', {
+      method: 'GET',
+      data: params
+    })
   }
 }
 

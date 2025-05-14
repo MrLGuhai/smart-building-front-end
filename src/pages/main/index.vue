@@ -49,10 +49,11 @@
           <DataDisplay v-if="currentMenuIndex === 0" />
           <ThresholdSettings v-if="currentMenuIndex === 1" />
           <ManualControl v-if="currentMenuIndex === 2" />
-          <EnvironmentHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 0" />
-          <ThresholdHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 1" />
-          <ControlHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 2" />
-          <AlarmHistory v-if="currentMenuIndex === 3 && currentSubMenuIndex === 3" />
+          <ThresholdAnalysis v-if="currentMenuIndex === 3" />
+          <EnvironmentHistory v-if="currentMenuIndex === 4 && currentSubMenuIndex === 0" />
+          <ThresholdHistory v-if="currentMenuIndex === 4 && currentSubMenuIndex === 1" />
+          <ControlHistory v-if="currentMenuIndex === 4 && currentSubMenuIndex === 2" />
+          <AlarmHistory v-if="currentMenuIndex === 4 && currentSubMenuIndex === 3" />
         </view>
       </view>
     </view>
@@ -69,11 +70,13 @@ import EnvironmentHistory from '@/components/EnvironmentHistory.vue'
 import ControlHistory from '@/components/ControlHistory.vue'
 import AlarmHistory from '@/components/AlarmHistory.vue'
 import ThresholdHistory from '@/components/ThresholdHistory.vue'
+import ThresholdAnalysis from '@/components/ThresholdAnalysis.vue'
 
 const menuItems = [
   { name: '数据展示', icon: 'list' },
   { name: '阈值设置', icon: 'gear' },
   { name: '手动控制', icon: 'paperplane' },
+  { name: '阈值分析', icon: 'vip' },
   { 
     name: '历史数据', 
     icon: 'search',
