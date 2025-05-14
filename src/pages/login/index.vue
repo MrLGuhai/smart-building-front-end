@@ -142,7 +142,7 @@ const handleLogin = async () => {
 
       // 跳转到主页
       uni.redirectTo({
-        url: '/pages/main/index'
+        url: '/pages/screen/index'
       })
     } else {
       uni.showToast({

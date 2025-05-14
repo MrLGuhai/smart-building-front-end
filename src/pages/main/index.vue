@@ -9,6 +9,10 @@
           <uni-icons type="poweroff" size="16" color="#666"></uni-icons>
           <text>退出登录</text>
         </view>
+        <view class="screen-btn" @click="handleGoScreen">
+          <uni-icons type="tv" size="16" color="#4a6fee"></uni-icons>
+          <text>数字大屏</text>
+        </view>
       </view>
     </view>
     
@@ -125,6 +129,10 @@ const handleLogout = () => {
     }
   })
 }
+
+const handleGoScreen = () => {
+  uni.redirectTo({ url: '/pages/screen/index' })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -179,6 +187,27 @@ const handleLogout = () => {
         color: #333;
       }
       
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+    
+    .screen-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      color: #4a6fee;
+      background: #f0f5ff;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: all 0.3s;
+      &:hover {
+        background: #e6e8eb;
+        color: #333;
+      }
       &:active {
         transform: scale(0.98);
       }

@@ -21,6 +21,13 @@
 			}
 		},
 		{
+			"path": "pages/screen/index",
+			"style": {
+				"navigationBarTitleText": "数据大屏",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/main/index",
 			"style": {
 				"navigationBarTitleText": "智能楼宇环境监控系统",
