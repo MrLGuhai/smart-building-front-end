@@ -1,55 +1,48 @@
 <template>
-  <view class="main-container">
-    <!-- 顶部栏 -->
-    <view class="header">
-      <text class="system-title">智能楼宇环境监控系统</text>
-      <view class="header-right">
-        <text class="username">[{{ user.username }}]</text>
-        <view class="logout-btn" @click="handleLogout">
-          <uni-icons type="poweroff" size="16" color="#666"></uni-icons>
-          <text>退出登录</text>
-        </view>
-        <view class="screen-btn" @click="handleGoScreen">
-          <uni-icons type="tv" size="16" color="#4a6fee"></uni-icons>
+  <view class="main-bg">
+    <view class="main-header">
+      <text class="main-title">智能楼宇环境监控系统</text>
+      <view class="main-header-right">
+        <text class="main-username">[{{ user.username }}]</text>
+        <view class="main-btn" @click="handleGoScreen">
+          <uni-icons type="tv" size="18" color="#1ecfff"></uni-icons>
           <text>数字大屏</text>
+        </view>
+        <view class="main-btn logout" @click="handleLogout">
+          <uni-icons type="poweroff" size="18" color="#ff5e62"></uni-icons>
+          <text>退出登录</text>
         </view>
       </view>
     </view>
-    
-    <view class="content">
-      <!-- 左侧菜单 -->
-      <view class="sidebar">
+    <view class="main-content-wrap">
+      <view class="main-sidebar">
         <view 
           v-for="(item, index) in menuItems" 
           :key="index"
-          class="menu-item"
-          :class="{'menu-item-active': currentMenuIndex === index}"
+          class="sidebar-item"
+          :class="{'sidebar-item-active': currentMenuIndex === index}"
           @click="handleMenuClick(index)"
         >
-          <uni-icons :type="item.icon" size="20" :color="currentMenuIndex === index ? '#4a6fee' : '#666'"></uni-icons>
-          <text class="menu-text">{{ item.name }}</text>
+          <uni-icons :type="item.icon" size="22" :color="currentMenuIndex === index ? '#1ecfff' : '#7ad0ff'" />
+          <text class="sidebar-text">{{ item.name }}</text>
         </view>
-        
-        <!-- 历史数据子菜单 -->
-        <view v-if="menuItems[currentMenuIndex].subItems" class="sub-menu">
+        <view v-if="menuItems[currentMenuIndex].subItems" class="sidebar-submenu">
           <view 
             v-for="(subItem, subIndex) in menuItems[currentMenuIndex].subItems" 
             :key="subIndex"
-            class="sub-menu-item"
-            :class="{'sub-menu-item-active': currentSubMenuIndex === subIndex}"
+            class="sidebar-subitem"
+            :class="{'sidebar-subitem-active': currentSubMenuIndex === subIndex}"
             @click="handleSubMenuClick(subIndex)"
           >
-            <text class="sub-menu-text">{{ subItem.name }}</text>
+            <text class="sidebar-subtext">{{ subItem.name }}</text>
           </view>
         </view>
       </view>
-      
-      <!-- 主内容区域 -->
       <view class="main-content">
-        <view class="content-header">
-          <text class="content-title">{{ currentMenuItem.name }}</text>
+        <view class="main-content-header">
+          <text class="main-content-title">{{ currentMenuItem.name }}</text>
         </view>
-        <view class="content-body">
+        <view class="main-content-body">
           <DataDisplay v-if="currentMenuIndex === 0" />
           <ThresholdSettings v-if="currentMenuIndex === 1" />
           <ManualControl v-if="currentMenuIndex === 2" />
@@ -136,182 +129,206 @@ const handleGoScreen = () => {
 </script>
 
 <style lang="scss" scoped>
-.main-container {
+.main-bg {
   min-height: 100vh;
+  background: linear-gradient(135deg, #0a1a2f 0%, #112a4d 100%);
   display: flex;
   flex-direction: column;
-  background-color: #f5f7fa;
 }
-
-.header {
+.main-header {
+  width: 100vw;
+  height: 72px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  
-  .system-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #333;
-  }
-  
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    
-    .username {
-      font-size: 14px;
-      color: #666;
-      padding: 4px 8px;
-      background: #f5f7fa;
-      border-radius: 4px;
-    }
-    
-    .logout-btn {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 6px 12px;
-      font-size: 14px;
-      color: #666;
-      background: #f5f7fa;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      
-      &:hover {
-        background: #e6e8eb;
-        color: #333;
-      }
-      
-      &:active {
-        transform: scale(0.98);
-      }
-    }
-    
-    .screen-btn {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 6px 12px;
-      font-size: 14px;
-      color: #4a6fee;
-      background: #f0f5ff;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-left: 8px;
-      transition: all 0.3s;
-      &:hover {
-        background: #e6e8eb;
-        color: #333;
-      }
-      &:active {
-        transform: scale(0.98);
-      }
-    }
+  justify-content: space-between;
+  background: linear-gradient(90deg, #0a1a2f 60%, #1ecfff22 100%);
+  box-shadow: 0 4px 24px #1ecfff22;
+  padding: 0 3px;
+  position: relative;
+  z-index: 10;
+}
+.main-title {
+  font-size: 30px;
+  color: #1ecfff;
+  font-weight: bold;
+  letter-spacing: 4px;
+  text-shadow: 0 0 16px #1ecfff99;
+}
+.main-header-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.main-username {
+  font-size: 16px;
+  color: #7ad0ff;
+  background: #1a2b3f;
+  border-radius: 6px;
+  padding: 6px 16px;
+  margin-right: 8px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+.main-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(90deg,#1ecfff,#00eaff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 22px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 8px #1ecfff55;
+  transition: background 0.2s, filter 0.2s;
+  &:hover {
+    filter: brightness(1.1);
+    background: linear-gradient(90deg,#00eaff,#1ecfff);
   }
 }
-
-.content {
+.main-btn.logout {
+  background: linear-gradient(90deg,#ff5e62,#ffb347);
+  color: #fff;
+  &:hover {
+    background: linear-gradient(90deg,#ffb347,#ff5e62);
+  }
+}
+.main-content-wrap {
   flex: 1;
   display: flex;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 72px);
+  overflow: hidden;
 }
-
-.sidebar {
-  width: 220px;
-  background: #fff;
-  padding: 20px 0;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-  overflow-y: auto;
+.main-sidebar {
+  width: 250px;
+  background: rgba(10,26,47,0.92);
+  box-shadow: 2px 0 18px #1ecfff22;
+  border-radius: 0 24px 24px 0;
+  padding: 32px 0 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
 }
-
-.menu-item {
-  height: 50px;
+.sidebar-item {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  padding: 0 36px;
+  cursor: pointer;
+  border-radius: 12px 0 0 12px;
+  margin-bottom: 8px;
+  font-size: 17px;
+  color: #7ad0ff;
+  font-weight: 500;
+  transition: all 0.25s;
+  background: transparent;
+  &:hover {
+    background: linear-gradient(90deg,#1ecfff22 0%,#1a2b3f 100%);
+    color: #1ecfff;
+  }
+  &-active {
+    background: linear-gradient(90deg,#1ecfff33 0%,#1a2b3f 100%);
+    color: #1ecfff;
+    box-shadow: 0 2px 12px #1ecfff33;
+  }
+  .sidebar-text {
+    margin-left: 16px;
+    font-size: 17px;
+    font-weight: 600;
+  }
+}
+.sidebar-submenu {
+  margin-left: 24px;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sidebar-subitem {
+  height: 40px;
   display: flex;
   align-items: center;
   padding: 0 24px;
   cursor: pointer;
-  transition: all 0.3s;
-  
+  border-radius: 8px 0 0 8px;
+  font-size: 15px;
+  color: #7ad0ff;
+  font-weight: 500;
+  transition: all 0.2s;
+  background: transparent;
   &:hover {
-    background-color: #f5f7fa;
+    background: linear-gradient(90deg,#1ecfff22 0%,#1a2b3f 100%);
+    color: #1ecfff;
   }
-  
   &-active {
-    background-color: #f0f5ff;
-    border-right: 3px solid #4a6fee;
-    
-    .menu-text {
-      color: #4a6fee;
-      font-weight: 500;
-    }
+    background: linear-gradient(90deg,#1ecfff33 0%,#1a2b3f 100%);
+    color: #1ecfff;
+    box-shadow: 0 2px 8px #1ecfff33;
   }
-  
-  .menu-text {
-    margin-left: 12px;
+  .sidebar-subtext {
+    margin-left: 8px;
     font-size: 15px;
-    color: #333;
+    font-weight: 500;
   }
 }
-
 .main-content {
   flex: 1;
-  padding: 24px;
+  padding: 36px 36px 36px 0;
   overflow-y: auto;
-  
-  .content-header {
-    margin-bottom: 24px;
-    
-    .content-title {
-      font-size: 24px;
-      font-weight: 600;
-      color: #333;
-    }
-  }
-  
-  .content-body {
-    background: #fff;
-    border-radius: 8px;
-    min-height: calc(100% - 60px);
-    padding: 24px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+.main-content-header {
+  margin-bottom: 24px;
+  .main-content-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #1ecfff;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px #1ecfff55;
   }
 }
-
-.sub-menu {
-  margin-left: 20px;
-  padding: 10px 0;
-  
-  .sub-menu-item {
-    height: 40px;
-    display: flex;
-    align-items: center;
-    padding: 0 24px;
-    cursor: pointer;
-    transition: all 0.3s;
-    
-    &:hover {
-      background-color: #f5f7fa;
-    }
-    
-    &-active {
-      background-color: #f0f5ff;
-      border-right: 3px solid #4a6fee;
-      
-      .sub-menu-text {
-        color: #4a6fee;
-        font-weight: 500;
-      }
-    }
-    
-    .sub-menu-text {
-      font-size: 14px;
-      color: #666;
-    }
+.main-content-body {
+  background: rgba(20,34,56,0.92);
+  border-radius: 18px;
+  min-height: 600px;
+  padding: 32px 36px;
+  box-shadow: 0 4px 32px #1ecfff22;
+  transition: box-shadow 0.2s;
+  margin-bottom: 32px;
+}
+@media (max-width: 1200px) {
+  .main-sidebar {
+    width: 180px;
+    padding: 16px 0;
+  }
+  .main-content {
+    padding: 24px 8px 24px 0;
+  }
+  .main-content-body {
+    padding: 18px 8px;
+  }
+}
+@media (max-width: 900px) {
+  .main-header {
+    padding: 0 12px;
+    height: 56px;
+  }
+  .main-title {
+    font-size: 20px;
+  }
+  .main-sidebar {
+    width: 100px;
+    padding: 8px 0;
+  }
+  .main-content {
+    padding: 8px 2px 8px 0;
+  }
+  .main-content-body {
+    padding: 8px 2px;
   }
 }
 </style> 

@@ -355,60 +355,71 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .threshold-settings {
-  padding: 20px;
+  padding: 32px;
+  background: transparent;
 }
 
 .threshold-section {
-  margin-bottom: 30px;
-
+  margin-bottom: 36px;
   .section-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 20px;
-    padding-left: 12px;
-    border-left: 4px solid #4a6fee;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1ecfff;
+    margin-bottom: 24px;
+    padding-left: 14px;
+    border-left: 4px solid #1ecfff;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px #1ecfff55;
   }
 }
 
 .current-thresholds {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  display: flex;
+  gap: 24px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .threshold-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-
+  background: rgba(20,34,56,0.92);
+  border-radius: 18px;
+  padding: 32px 16px;
+  min-width: 150px;
+  max-width: 200px;
+  flex: 1 1 0;
+  box-shadow: 0 4px 24px #1ecfff22;
+  border: 1.5px solid #1ecfff33;
+  transition: transform 0.3s, box-shadow 0.3s;
+  &:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 8px 32px #1ecfff55;
+    border-color: #1ecfff;
+  }
   .card-header {
     display: flex;
     align-items: center;
-    margin-bottom: 16px;
-
+    margin-bottom: 18px;
     .card-title {
-      margin-left: 8px;
-      font-size: 16px;
-      color: #666;
+      margin-left: 10px;
+      font-size: 18px;
+      color: #7ad0ff;
+      font-weight: 600;
+      letter-spacing: 1px;
     }
   }
-
   .card-value {
     display: flex;
     align-items: baseline;
-
     .value {
-      font-size: 32px;
-      font-weight: 600;
-      color: #333;
+      font-size: 38px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 8px #1ecfff33;
     }
-
     .unit {
-      margin-left: 4px;
-      font-size: 16px;
-      color: #666;
+      margin-left: 6px;
+      font-size: 18px;
+      color: #7ad0ff;
     }
   }
 }
@@ -420,9 +431,8 @@ onMounted(() => {
 
 .form-row {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-
+  gap: 24px;
+  margin-bottom: 24px;
   @media screen and (max-width: 768px) {
     flex-direction: column;
   }
@@ -430,25 +440,25 @@ onMounted(() => {
 
 .form-item {
   flex: 1;
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s;
-
+  background: rgba(20,34,56,0.92);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px #1ecfff22;
+  border: 1.5px solid #1ecfff22;
+  transition: box-shadow 0.3s, border-color 0.3s;
   &:hover {
-    transform: translateY(-2px);
+    box-shadow: 0 6px 24px #1ecfff55;
+    border-color: #1ecfff;
   }
-
   .item-header {
     display: flex;
     align-items: center;
-    margin-bottom: 16px;
-
+    margin-bottom: 18px;
     .item-title {
-      margin-left: 8px;
-      font-size: 16px;
-      color: #666;
+      margin-left: 10px;
+      font-size: 17px;
+      color: #7ad0ff;
+      font-weight: 600;
     }
   }
 }
@@ -456,76 +466,116 @@ onMounted(() => {
 .input-wrapper {
   display: flex;
   align-items: center;
-  background: #f5f7fa;
+  background: #1a2b3f;
   border-radius: 8px;
-  padding: 0 16px;
-  height: 45px;
-
+  padding: 0 18px;
+  height: 48px;
+  border: 1.5px solid #1ecfff33;
+  transition: border-color 0.2s, box-shadow 0.2s;
   .threshold-input {
     flex: 1;
     height: 100%;
     border: none;
     background: transparent;
-    font-size: 16px;
-    color: #333;
-
+    font-size: 18px;
+    color: #fff;
+    font-weight: 600;
     &::placeholder {
-      color: #999;
+      color: #7ad0ff99;
+    }
+    &:focus {
+      outline: none;
     }
   }
-
   .unit {
-    margin-left: 8px;
-    font-size: 14px;
-    color: #666;
+    margin-left: 10px;
+    font-size: 16px;
+    color: #1ecfff;
+    font-weight: 600;
+  }
+  &:focus-within {
+    border-color: #1ecfff;
+    box-shadow: 0 0 8px #1ecfff55;
   }
 }
 
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-top: 30px;
+  gap: 24px;
+  margin-top: 32px;
 }
 
 .clear-button {
-  width: 200px;
+  width: 180px;
   height: 45px;
-  background: #fff;
-  border: 1px solid #4a6fee;
+  background: transparent;
+  border: 1.5px solid #1ecfff;
   border-radius: 25px;
-  color: #4a6fee;
+  color: #1ecfff;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.3s;
-
+  &:hover {
+    background: #1ecfff22;
+    color: #fff;
+  }
   &:active {
-    background: #f0f5ff;
+    background: #1ecfff33;
   }
 }
 
 .submit-button {
-  width: 200px;
+  width: 180px;
   height: 45px;
-  background: linear-gradient(135deg, #6c8bef, #4a6fee);
+  background: linear-gradient(135deg, #6c8bef, #1ecfff);
   border: none;
   border-radius: 25px;
   color: white;
   font-size: 16px;
-  font-weight: 500;
-  transition: opacity 0.3s;
-
-  &:active {
-    opacity: 0.9;
+  font-weight: 600;
+  transition: opacity 0.3s, background 0.2s;
+  box-shadow: 0 2px 12px #1ecfff33;
+  &:hover {
+    opacity: 0.92;
+    background: linear-gradient(135deg, #1ecfff, #6c8bef);
   }
-
+  &:active {
+    opacity: 0.85;
+  }
   &:disabled {
-    background: #ccc;
+    background: #2a3a4d;
+    color: #999;
     cursor: not-allowed;
+    opacity: 1;
+  }
+}
 
-    &:active {
-      opacity: 1;
-    }
+@media (max-width: 1200px) {
+  .current-thresholds {
+    gap: 12px;
+  }
+  .threshold-card {
+    min-width: 160px;
+    padding: 18px 12px;
+  }
+  .form-row {
+    gap: 12px;
+  }
+  .form-item {
+    padding: 12px 8px;
+  }
+}
+@media (max-width: 900px) {
+  .threshold-settings {
+    padding: 8px;
+  }
+  .threshold-card {
+    min-width: 120px;
+    padding: 10px 4px;
+  }
+  .form-item {
+    padding: 8px 4px;
   }
 }
 </style> 

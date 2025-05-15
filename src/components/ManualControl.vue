@@ -258,150 +258,171 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .manual-control {
-  padding: 20px;
+  padding: 32px;
+  background: transparent;
 }
 
 .control-section {
   .section-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 30px;
-    padding-left: 12px;
-    border-left: 4px solid #4a6fee;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1ecfff;
+    margin-bottom: 32px;
+    padding-left: 14px;
+    border-left: 4px solid #1ecfff;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px #1ecfff55;
   }
 }
 
 .control-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .control-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
+  background: rgba(20,34,56,0.92);
+  border-radius: 18px;
+  padding: 32px 36px;
   display: flex;
   align-items: center;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s;
-
+  box-shadow: 0 4px 24px #1ecfff22;
+  border: 1.5px solid #1ecfff33;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 8px 32px #1ecfff55;
+    border-color: #1ecfff;
   }
-
   .device-icon {
-    width: 50px;
-    height: 50px;
-    background: #f5f7fa;
-    border-radius: 12px;
+    width: 54px;
+    height: 54px;
+    background: #1a2b3f;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 16px;
+    margin-right: 18px;
     transition: background-color 0.3s;
   }
-
   .device-info {
     flex: 1;
-    margin-right: 16px;
-
+    margin-right: 18px;
     .device-name {
-      font-size: 16px;
-      font-weight: 500;
-      color: #333;
+      font-size: 18px;
+      font-weight: 600;
+      color: #7ad0ff;
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
     }
-
     .device-status {
-      font-size: 14px;
+      font-size: 16px;
       display: block;
-
+      font-weight: 700;
       &.status-on {
-        color: #4a6fee;
+        color: #1ecfff;
+        text-shadow: 0 0 8px #1ecfff55;
       }
-
       &.status-off {
         color: #999;
       }
     }
   }
-
   .control-switch {
     display: flex;
     align-items: center;
+    .uni-switch {
+      --switch-checked-color: #1ecfff;
+      --switch-border-color: #1ecfff55;
+      --switch-bg-color: #1a2b3f;
+      --switch-width: 56px;
+      --switch-height: 32px;
+    }
   }
 }
 
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-top: 30px;
+  gap: 32px;
+  margin-top: 36px;
   padding: 0 20px;
 }
 
 .reset-button {
-  width: 200px;
+  width: 180px;
   height: 45px;
-  background: #fff;
-  border: 1px solid #4a6fee;
+  background: transparent;
+  border: 1.5px solid #1ecfff;
   border-radius: 25px;
-  color: #4a6fee;
+  color: #1ecfff;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.3s;
-
+  &:hover {
+    background: #1ecfff22;
+    color: #fff;
+  }
   &:active {
-    background: #f0f5ff;
+    background: #1ecfff33;
   }
 }
 
 .submit-button {
-  width: 200px;
+  width: 180px;
   height: 45px;
-  background: linear-gradient(135deg, #6c8bef, #4a6fee);
+  background: linear-gradient(135deg, #6c8bef, #1ecfff);
   border: none;
   border-radius: 25px;
   color: white;
   font-size: 16px;
-  font-weight: 500;
-  transition: opacity 0.3s;
-
-  &:active {
-    opacity: 0.9;
+  font-weight: 600;
+  transition: opacity 0.3s, background 0.2s;
+  box-shadow: 0 2px 12px #1ecfff33;
+  &:hover {
+    opacity: 0.92;
+    background: linear-gradient(135deg, #1ecfff, #6c8bef);
   }
-
+  &:active {
+    opacity: 0.85;
+  }
   &:disabled {
-    background: #ccc;
+    background: #2a3a4d;
+    color: #999;
     cursor: not-allowed;
-
-    &:active {
-      opacity: 1;
-    }
+    opacity: 1;
   }
 }
 
-// 适配移动端
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1200px) {
   .control-grid {
-    grid-template-columns: 1fr;
+    gap: 16px;
   }
-
   .control-card {
-    padding: 20px;
+    min-width: 180px;
+    padding: 18px 12px;
   }
-
+  .button-group {
+    gap: 16px;
+  }
+}
+@media screen and (max-width: 900px) {
+  .manual-control {
+    padding: 8px;
+  }
+  .control-card {
+    min-width: 120px;
+    padding: 10px 4px;
+  }
   .button-group {
     flex-direction: column;
     align-items: center;
+    gap: 12px;
   }
-
   .reset-button,
   .submit-button {
     width: 100%;

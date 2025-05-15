@@ -214,127 +214,159 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .data-display {
-  padding: 20px;
+  padding: 32px;
+  background: transparent;
 }
 
 .data-section {
-  margin-bottom: 30px;
-
+  margin-bottom: 36px;
   .section-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 20px;
-    padding-left: 12px;
-    border-left: 4px solid #4a6fee;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1ecfff;
+    margin-bottom: 24px;
+    padding-left: 14px;
+    border-left: 4px solid #1ecfff;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px #1ecfff55;
   }
 }
 
 .data-cards {
   display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+  gap: 24px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .data-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  min-width: 200px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s;
-
+  background: rgba(20,34,56,0.92);
+  border-radius: 18px;
+  padding: 32px 16px;
+  min-width: 150px;
+  max-width: 200px;
+  flex: 1 1 0;
+  box-shadow: 0 4px 24px #1ecfff22;
+  border: 1.5px solid #1ecfff33;
+  transition: transform 0.3s, box-shadow 0.3s;
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 8px 32px #1ecfff55;
+    border-color: #1ecfff;
   }
-
   .card-header {
     display: flex;
     align-items: center;
-    margin-bottom: 16px;
-
+    margin-bottom: 18px;
     .card-title {
-      margin-left: 8px;
-      font-size: 16px;
-      color: #666;
+      margin-left: 10px;
+      font-size: 18px;
+      color: #7ad0ff;
+      font-weight: 600;
+      letter-spacing: 1px;
     }
   }
-
   .card-value {
     display: flex;
     align-items: baseline;
-
     .value {
-      font-size: 32px;
-      font-weight: 600;
-      color: #333;
+      font-size: 38px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 8px #1ecfff33;
     }
-
     .unit {
-      margin-left: 4px;
-      font-size: 16px;
-      color: #666;
+      margin-left: 6px;
+      font-size: 18px;
+      color: #7ad0ff;
     }
   }
 }
 
 .status-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
 }
 
 .status-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
+  background: rgba(20,34,56,0.92);
+  border-radius: 16px;
+  padding: 22px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s;
-
+  box-shadow: 0 2px 12px #1ecfff22;
+  border: 1.5px solid #1ecfff22;
+  transition: box-shadow 0.3s, border-color 0.3s;
   &:hover {
-    transform: translateY(-2px);
+    box-shadow: 0 6px 24px #1ecfff55;
+    border-color: #1ecfff;
   }
-
   .status-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-
+    gap: 10px;
     .status-title {
-      font-size: 14px;
-      color: #666;
+      font-size: 16px;
+      color: #7ad0ff;
+      font-weight: 600;
     }
   }
-
   .status-value {
-    font-size: 16px;
-    font-weight: 500;
-    padding: 4px 12px;
-    border-radius: 4px;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 6px 18px;
+    border-radius: 6px;
     text-align: center;
-    
+    min-width: 60px;
     &.status-on {
-      background-color: #e6f3ff;
-      color: #4a6fee;
+      background-color: #1ecfff33;
+      color: #1ecfff;
+      box-shadow: 0 0 8px #1ecfff55;
     }
-    
     &.status-off {
-      background-color: #f5f5f5;
+      background-color: #2a3a4d;
       color: #999;
     }
-    
     &.status-normal {
-      background-color: #e6fff1;
-      color: #00b578;
+      background-color: #00b57833;
+      color: #00e6a0;
+      box-shadow: 0 0 8px #00e6a055;
     }
-    
     &.status-error {
-      background-color: #ffece8;
+      background-color: #ff4d4f22;
       color: #ff4d4f;
+      box-shadow: 0 0 8px #ff4d4f55;
     }
+  }
+}
+
+@media (max-width: 1200px) {
+  .data-cards {
+    gap: 16px;
+  }
+  .status-cards {
+    gap: 12px;
+  }
+  .data-card {
+    min-width: 160px;
+    padding: 18px 12px;
+  }
+  .status-card {
+    padding: 12px 8px;
+  }
+}
+@media (max-width: 900px) {
+  .data-display {
+    padding: 8px;
+  }
+  .data-card {
+    min-width: 120px;
+    padding: 10px 4px;
+  }
+  .status-card {
+    padding: 8px 4px;
   }
 }
 </style> 

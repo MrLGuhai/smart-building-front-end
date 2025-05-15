@@ -350,8 +350,8 @@ const fetchAnalysisData = async () => {
 
 <style lang="scss" scoped>
 .threshold-analysis {
-  padding: 24px 0 32px 0;
-  background-color: #f5f7fa;
+  padding: 32px 0 40px 0;
+  background: transparent;
   min-height: 100vh;
 }
 .analysis-header {
@@ -359,11 +359,12 @@ const fetchAnalysisData = async () => {
   justify-content: center;
   align-items: center;
   margin-bottom: 32px;
-  background: #fff;
+  background: rgba(20,34,56,0.92);
   padding: 28px 32px 28px 32px;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(64,158,255,0.08);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px #1ecfff22;
   gap: 32px;
+  border: 1.5px solid #1ecfff33;
   .header-left {
     display: flex;
     gap: 32px;
@@ -373,17 +374,17 @@ const fetchAnalysisData = async () => {
     align-items: center;
     gap: 10px;
     padding: 10px 22px;
-    background: #f5f7fa;
+    background: #1a2b3f;
     border-radius: 10px;
     font-size: 17px;
-    color: #666;
+    color: #7ad0ff;
     .selected-value {
-      color: #333;
-      font-weight: 500;
+      color: #fff;
+      font-weight: 600;
     }
   }
   .analyze-btn {
-    background: linear-gradient(90deg, #409EFF 0%, #66b1ff 100%);
+    background: linear-gradient(90deg, #409EFF 0%, #1ecfff 100%);
     color: #fff;
     font-size: 20px;
     padding: 0 38px;
@@ -391,8 +392,8 @@ const fetchAnalysisData = async () => {
     line-height: 48px;
     border-radius: 24px;
     border: none;
-    box-shadow: 0 4px 16px rgba(64,158,255,0.13);
-    font-weight: 600;
+    box-shadow: 0 4px 16px #1ecfff33;
+    font-weight: 700;
     letter-spacing: 2px;
     transition: background 0.2s, box-shadow 0.2s;
     cursor: pointer;
@@ -400,11 +401,17 @@ const fetchAnalysisData = async () => {
     align-items: center;
     justify-content: center;
     &:hover {
-      background: linear-gradient(90deg, #66b1ff 0%, #409EFF 100%);
-      box-shadow: 0 6px 20px rgba(64,158,255,0.18);
+      background: linear-gradient(90deg, #1ecfff 0%, #409EFF 100%);
+      box-shadow: 0 6px 20px #1ecfff55;
     }
     &:active {
       background: #337ecc;
+    }
+    &:disabled {
+      background: #2a3a4d;
+      color: #999;
+      cursor: not-allowed;
+      opacity: 1;
     }
   }
 }
@@ -412,11 +419,17 @@ const fetchAnalysisData = async () => {
   margin-bottom: 48px;
 }
 .type-card {
-  background: #fff;
+  background: rgba(20,34,56,0.92);
   border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 24px #1ecfff22;
+  border: 1.5px solid #1ecfff33;
   padding: 0 0 24px 0;
   margin-bottom: 32px;
+  transition: box-shadow 0.3s, border-color 0.3s;
+  &:hover {
+    box-shadow: 0 8px 32px #1ecfff55;
+    border-color: #1ecfff;
+  }
 }
 .type-title-bar {
   display: flex;
@@ -434,8 +447,9 @@ const fetchAnalysisData = async () => {
 .type-title-text {
   font-size: 22px;
   font-weight: bold;
-  color: #222;
+  color: #1ecfff;
   letter-spacing: 1px;
+  text-shadow: 0 0 8px #1ecfff55;
 }
 .type-content-row {
   display: flex;
@@ -448,19 +462,20 @@ const fetchAnalysisData = async () => {
 }
 .threshold-panel, .analysis-panel {
   flex: 1;
-  background: #f8fafc;
+  background: #1a2b3f;
   border-radius: 12px;
   padding: 18px 24px 12px 24px;
   min-width: 220px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  box-shadow: 0 2px 8px rgba(64,158,255,0.04);
+  box-shadow: 0 2px 8px #1ecfff22;
+  border: 1.5px solid #1ecfff22;
 }
 .panel-title {
   font-size: 17px;
   font-weight: 600;
-  color: #409EFF;
+  color: #1ecfff;
   margin-bottom: 12px;
 }
 .threshold-values, .analysis-values {
@@ -471,13 +486,13 @@ const fetchAnalysisData = async () => {
   text-align: left;
   .item-label {
     font-size: 15px;
-    color: #888;
+    color: #7ad0ff;
     margin-bottom: 4px;
   }
   .item-value {
     font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: #fff;
     &.value-diff {
       color: #F56C6C;
     }
@@ -486,7 +501,7 @@ const fetchAnalysisData = async () => {
 .analysis-item {
   .item-label {
     font-size: 15px;
-    color: #888;
+    color: #7ad0ff;
     margin-bottom: 4px;
   }
   .item-value-row {
@@ -496,11 +511,11 @@ const fetchAnalysisData = async () => {
     .item-value {
       font-size: 24px;
       font-weight: bold;
-      color: #333;
+      color: #fff;
     }
     .item-unit {
       font-size: 15px;
-      color: #666;
+      color: #1ecfff;
     }
     .tag-inline {
       margin-left: 8px;
@@ -533,11 +548,12 @@ const fetchAnalysisData = async () => {
 }
 .distribution-panel, .suggestion-panel {
   flex: 1;
-  background: #f8fafc;
+  background: #1a2b3f;
   border-radius: 12px;
   padding: 18px 24px 12px 24px;
   min-width: 220px;
-  box-shadow: 0 2px 8px rgba(64,158,255,0.04);
+  box-shadow: 0 2px 8px #1ecfff22;
+  border: 1.5px solid #1ecfff22;
 }
 .distribution-content {
   padding: 8px 0 0 0;
@@ -560,6 +576,7 @@ const fetchAnalysisData = async () => {
   margin: 0 10px;
   border-radius: 8px;
   transition: height 0.3s, width 0.3s;
+  background: #1ecfff33;
   .time-label {
     font-size: 13px;
     color: #fff;
@@ -575,7 +592,7 @@ const fetchAnalysisData = async () => {
 .bar-x-axis {
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, #e0e7ef 0%, #f5f7fa 100%);
+  background: linear-gradient(90deg, #1ecfff22 0%, #1a2b3f 100%);
   border-radius: 1px;
   margin-top: 2px;
 }
@@ -593,8 +610,30 @@ const fetchAnalysisData = async () => {
   .suggestion-text {
     flex: 1;
     font-size: 16px;
-    color: #666;
+    color: #7ad0ff;
     line-height: 1.5;
+    font-weight: 600;
+  }
+}
+@media (max-width: 1200px) {
+  .analysis-header {
+    padding: 18px 8px 18px 8px;
+    gap: 12px;
+  }
+  .type-card {
+    padding: 0 0 12px 0;
+  }
+  .type-content-row, .type-content-bottom {
+    gap: 12px;
+    padding: 0 8px;
+  }
+}
+@media (max-width: 900px) {
+  .threshold-analysis {
+    padding: 8px 0 16px 0;
+  }
+  .type-card {
+    padding: 0 0 4px 0;
   }
 }
 </style> 

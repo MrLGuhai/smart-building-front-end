@@ -226,7 +226,8 @@ const initTempHumidityChart = () => {
         legend: {
           data: ['温度', '湿度'],
           top: 5,               // 距离容器上边距5px
-          left: 'center'        // 水平居中
+          left: 'center',      // 水平居中
+          textStyle: { color: '#1ecfff', fontWeight: 'bold', fontSize: 13 }
         },
         
         // 直角坐标系内绘图网格配置
@@ -407,7 +408,8 @@ const initLightChart = () => {
         legend: {
           data: ['光照强度'],
           top: 5,
-          left: 'center'
+          left: 'center',
+          textStyle: { color: '#1ecfff', fontWeight: 'bold', fontSize: 13 }
         },
         grid: {
           left: 20,       // 增加左边距
@@ -522,7 +524,8 @@ const initSmokeChart = () => {
         legend: {
           data: ['烟雾浓度'],
           top: 5,
-          left: 'center'
+          left: 'center',
+          textStyle: { color: '#1ecfff', fontWeight: 'bold', fontSize: 13 }
         },
         grid: {
           left: 20,
@@ -647,157 +650,141 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .environment-history {
-  padding: 20px;
+  padding: 32px;
   width: 100%;
   box-sizing: border-box;
-  
-  .search-container {
-    background: #fff;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-    
-    .search-form {
-      background-color: #fff;
-      border-radius: 12rpx;
-      padding: 24rpx;
-      margin-bottom: 24rpx;
-      box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-      
-      .form-content {
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: center;
-        gap: 20rpx;
-        
-        .form-item {
-          display: flex;
-          align-items: center;
-          
-          // 记录数量输入框样式
-          &.limit-item {
-            flex: 0 0 200rpx;
-            
-            .input {
-              width: 120rpx;
-            }
-          }
-          
-          // 时间选择器样式
-          &:has(.uni-datetime-picker) {
-            flex: 0 0 420rpx;
-          }
-          
-          :deep(.uni-datetime-picker) {
-            flex: 1;
-            width: 100%;
-            
-            .uni-datetime-picker-timebox {
-              width: 320rpx;
-              height: 68rpx;
-              line-height: 68rpx;
-              padding: 0 16rpx;
-              background-color: #f8f9fc;
-              border-radius: 6rpx;
-              font-size: 26rpx;
-              border: 1rpx solid #eaecf3;
-              transition: all 0.3s ease;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              
-              &:hover {
-                border-color: #4a6fee;
-                background-color: #f5f7ff;
-              }
-              
-              .uni-datetime-picker-time {
-                line-height: 66rpx;
-                height: 66rpx;
-                color: #333;
-              }
-            }
-          }
-          
-          .label {
-            font-size: 26rpx;
-            color: #333;
-            margin-right: 12rpx;
-            white-space: nowrap;
-            font-weight: 500;
-          }
-          
-          .input {
-            height: 68rpx;
-            line-height: 68rpx;
-            padding: 0 16rpx;
-            background-color: #f8f9fc;
-            border-radius: 6rpx;
-            font-size: 26rpx;
-            color: #333;
-            border: 1rpx solid #eaecf3;
-            transition: all 0.3s ease;
-            text-align: center;
-            
-            &:hover, &:focus {
-              border-color: #4a6fee;
-              background-color: #f5f7ff;
-            }
-          }
-        }
-        
-        .search-btn {
-          margin-left: auto;
+  background: transparent;
+}
+
+.search-container {
+  background: rgba(20,34,56,0.92);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 24px #1ecfff22;
+  border: 1.5px solid #1ecfff33;
+}
+
+.search-form {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+  .form-content {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 24px;
+    .form-item {
+      display: flex;
+      align-items: center;
+      &.limit-item {
+        flex: 0 0 200rpx;
+        .input {
           width: 120rpx;
-          height: 68rpx;
-          line-height: 68rpx;
-          text-align: center;
-          background-color: #4a6fee;
+          background: #1a2b3f;
           color: #fff;
-          border-radius: 6rpx;
-          font-size: 26rpx;
-          padding: 0;
-          transition: all 0.3s ease;
-          flex-shrink: 0;
-          
-          &:hover {
-            background-color: #3d5ed9;
-          }
-          
-          &[disabled] {
-            opacity: 0.6;
-            cursor: not-allowed;
+          border: 1.5px solid #1ecfff33;
+          border-radius: 8px;
+          font-size: 18px;
+          font-weight: 600;
+          padding: 0 16px;
+          transition: border-color 0.2s;
+          &:focus {
+            border-color: #1ecfff;
+            outline: none;
           }
         }
       }
+      .label {
+        font-size: 18px;
+        color: #1ecfff;
+        margin-right: 12rpx;
+        white-space: nowrap;
+        font-weight: 600;
+      }
+    }
+    .search-btn {
+      margin-left: auto;
+      width: 120rpx;
+      height: 48px;
+      line-height: 48px;
+      text-align: center;
+      background: linear-gradient(90deg,#1ecfff,#00eaff);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 0;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      border: none;
+      box-shadow: 0 0 8px #1ecfff55;
+      &:hover {
+        background: linear-gradient(90deg,#00eaff,#1ecfff);
+      }
+      &[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
     }
   }
-  
-  .chart-container {
-    background: #fff;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-    width: 100%;  // 使用100%宽度
+}
+
+.chart-container {
+  background: rgba(20,34,56,0.92);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 24px #1ecfff22;
+  border: 1.5px solid #1ecfff33;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+  .chart-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1ecfff;
+    margin-bottom: 18px;
+    text-align: left;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px #1ecfff55;
+  }
+  .chart {
+    width: 100% !important;
+    height: 300px !important;
     box-sizing: border-box;
-    overflow: visible;  // 允许内容溢出以显示右侧Y轴
-    
-    .chart-title {
-      font-size: 16px;
-      font-weight: 500;
-      color: #333;
-      margin-bottom: 16px;
-      text-align: left;  // 标题左对齐
-    }
-    
-    .chart {
-      width: 100% !important;  // 使用100%宽度
-      height: 300px !important;
-      box-sizing: border-box;
-      display: block;
-    }
+    display: block;
+    background: transparent;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .environment-history {
+    padding: 8px;
+  }
+  .chart-container {
+    padding: 8px;
+    margin-bottom: 12px;
+  }
+  .search-container {
+    padding: 8px;
+    margin-bottom: 12px;
+  }
+}
+@media (max-width: 900px) {
+  .environment-history {
+    padding: 4px;
+  }
+  .chart-container {
+    padding: 4px;
+    margin-bottom: 8px;
+  }
+  .search-container {
+    padding: 4px;
+    margin-bottom: 8px;
   }
 }
 </style> 

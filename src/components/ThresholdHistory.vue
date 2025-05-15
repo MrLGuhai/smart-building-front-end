@@ -296,201 +296,217 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .threshold-history {
-  padding: 20rpx;
-  
-  .search-form {
-    background-color: #fff;
-    border-radius: 12rpx;
-    padding: 24rpx;
-    margin-bottom: 24rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    
-    .form-content {
+  padding: 32px;
+  background: transparent;
+}
+
+.search-form {
+  background: rgba(20,34,56,0.92);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 24px #1ecfff22;
+  border: 1.5px solid #1ecfff33;
+  .form-content {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 24px;
+    .form-item {
       display: flex;
-      flex-wrap: nowrap;
       align-items: center;
-      gap: 20rpx;
-      
-      .form-item {
-        display: flex;
-        align-items: center;
-        
-        // 记录数量输入框样式
-        &.limit-item {
-          flex: 0 0 200rpx;
-          
-          .input {
-            width: 120rpx;
-          }
-        }
-        
-        // 阈值类型选择器样式
-        &.threshold-type-item {
-          flex: 0 0 300rpx;
-          
-          .picker {
-            width: 220rpx;
-          }
-        }
-        
-        // 时间选择器样式
-        &:has(.uni-datetime-picker) {
-          flex: 0 0 420rpx;
-        }
-        
-        :deep(.uni-datetime-picker) {
-          flex: 1;
-          width: 100%;
-          
-          .uni-datetime-picker-timebox {
-            width: 320rpx;
-            height: 68rpx;
-            line-height: 68rpx;
-            padding: 0 16rpx;
-            background-color: #f8f9fc;
-            border-radius: 6rpx;
-            font-size: 26rpx;
-            border: 1rpx solid #eaecf3;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            
-            &:hover {
-              border-color: #4a6fee;
-              background-color: #f5f7ff;
-            }
-            
-            .uni-datetime-picker-time {
-              line-height: 66rpx;
-              height: 66rpx;
-              color: #333;
-            }
-          }
-        }
-        
-        .label {
-          font-size: 26rpx;
-          color: #333;
-          margin-right: 12rpx;
-          white-space: nowrap;
-          font-weight: 500;
-        }
-        
-        .picker, .input {
-          height: 68rpx;
-          line-height: 68rpx;
-          padding: 0 16rpx;
-          background-color: #f8f9fc;
-          border-radius: 6rpx;
-          font-size: 26rpx;
-          color: #333;
-          border: 1rpx solid #eaecf3;
-          transition: all 0.3s ease;
-          
-          &:hover, &:focus {
-            border-color: #4a6fee;
-            background-color: #f5f7ff;
-          }
-        }
-        
+      &.limit-item {
+        flex: 0 0 200rpx;
         .input {
-          text-align: center;
+          width: 120rpx;
+          background: #1a2b3f;
+          color: #fff;
+          border: 1.5px solid #1ecfff33;
+          border-radius: 8px;
+          font-size: 15px;
+          font-weight: 600;
+          padding: 0 16px;
+          transition: border-color 0.2s;
+          &:focus {
+            border-color: #1ecfff;
+            outline: none;
+          }
         }
       }
-      
-      .search-btn {
-        margin-left: auto;
-        width: 120rpx;
-        height: 68rpx;
-        line-height: 68rpx;
-        text-align: center;
-        background-color: #4a6fee;
+      .label {
+        font-size: 15px;
+        color: #1ecfff;
+        margin-right: 12rpx;
+        white-space: nowrap;
+        font-weight: 600;
+      }
+      .picker {
+        height: 48px;
+        line-height: 48px;
+        background: #1a2b3f;
+        border-radius: 8px;
+        font-size: 15px;
         color: #fff;
-        border-radius: 6rpx;
-        font-size: 26rpx;
-        padding: 0;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-        
-        &:hover {
-          background-color: #3d5ed9;
+        border: 1.5px solid #1ecfff33;
+        padding: 0 16px;
+        transition: border-color 0.2s;
+        &:hover, &:focus {
+          border-color: #1ecfff;
         }
-        
-        &[disabled] {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
+      }
+    }
+    .search-btn {
+      margin-left: auto;
+      width: 120rpx;
+      height: 48px;
+      line-height: 48px;
+      text-align: center;
+      background: linear-gradient(90deg,#1ecfff,#00eaff);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      padding: 0;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      border: none;
+      box-shadow: 0 0 8px #1ecfff55;
+      &:hover {
+        background: linear-gradient(90deg,#00eaff,#1ecfff);
+      }
+      &[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
       }
     }
   }
-  
-  .records-list {
-    background-color: #fff;
-    border-radius: 8rpx;
-    padding: 20rpx;
-    
-    .table-header {
+}
+
+.records-list {
+  background: rgba(20,34,56,0.92);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 4px 24px #1ecfff22;
+  border: 1.5px solid #1ecfff33;
+  .table-header {
+    display: flex;
+    padding: 20rpx 0;
+    border-bottom: 1.5px solid #1ecfff33;
+    font-size: 17px;
+    color: #1ecfff;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  .table-body {
+    height: calc(100vh - 600rpx);
+    .table-row {
       display: flex;
       padding: 20rpx 0;
-      border-bottom: 1rpx solid #eee;
-      font-size: 28rpx;
-      color: #333;
-      font-weight: bold;
+      border-bottom: 1px solid #1ecfff22;
+      font-size: 15px;
+      color: #fff;
+      font-weight: 600;
+      &:last-child {
+        border-bottom: none;
+      }
+      .cell.value-diff {
+        color: #F56C6C;
+      }
     }
-    
-    .table-body {
-      height: calc(100vh - 600rpx);
-      
-      .table-row {
-        display: flex;
-        padding: 20rpx 0;
-        border-bottom: 1rpx solid #eee;
-        font-size: 28rpx;
-        color: #666;
-        
-        &:last-child {
-          border-bottom: none;
+  }
+  .header-item,
+  .cell {
+    flex: 1;
+    padding: 0 10rpx;
+    &.index {
+      flex: 0.5;
+    }
+    &.record-id {
+      flex: 0.8;
+    }
+    &.threshold-type {
+      flex: 1.2;
+    }
+    &.old-value,
+    &.new-value {
+      flex: 0.8;
+    }
+    &.operator {
+      flex: 0.8;
+    }
+    &.time {
+      flex: 1.5;
+    }
+  }
+  .empty-tip {
+    text-align: center;
+    padding: 40rpx 0;
+    color: #999;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .threshold-history {
+    padding: 8px;
+  }
+  .search-form {
+    padding: 8px;
+    margin-bottom: 12px;
+  }
+  .records-list {
+    padding: 8px;
+  }
+  .search-form {
+    .form-content {
+      .form-item {
+        .label {
+          font-size: 13px !important;
+        }
+        .input, .picker {
+          font-size: 13px !important;
         }
       }
-    }
-    
-    .header-item,
-    .cell {
-      flex: 1;
-      padding: 0 10rpx;
-      
-      &.index {
-        flex: 0.5;
-      }
-      
-      &.record-id {
-        flex: 0.8;
-      }
-      
-      &.threshold-type {
-        flex: 1.2;
-      }
-      
-      &.old-value,
-      &.new-value {
-        flex: 0.8;
-      }
-      
-      &.operator {
-        flex: 0.8;
-      }
-      
-      &.time {
-        flex: 1.5;
+      .search-btn {
+        font-size: 13px !important;
       }
     }
-    
-    .empty-tip {
-      text-align: center;
-      padding: 40rpx 0;
-      color: #999;
-      font-size: 28rpx;
+  }
+  .records-list {
+    .table-header, .table-row, .header-item, .cell, .empty-tip {
+      font-size: 13px !important;
+    }
+  }
+}
+@media (max-width: 900px) {
+  .threshold-history {
+    padding: 4px;
+  }
+  .search-form {
+    padding: 4px;
+    margin-bottom: 8px;
+  }
+  .records-list {
+    padding: 4px;
+  }
+  .search-form {
+    .form-content {
+      .form-item {
+        .label {
+          font-size: 12px !important;
+        }
+        .input, .picker {
+          font-size: 12px !important;
+        }
+      }
+      .search-btn {
+        font-size: 12px !important;
+      }
+    }
+  }
+  .records-list {
+    .table-header, .table-row, .header-item, .cell, .empty-tip {
+      font-size: 12px !important;
     }
   }
 }

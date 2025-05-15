@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 import { environmentAPI, alarmAPI, thresholdAPI, deviceAPI } from '@/api'
 import { useRouter } from 'vue-router'
@@ -104,6 +104,9 @@ const alarmStats = ref({
   typeCount: [], // [{name, value}]
   dayCount: []  // [{date, value}]
 })
+
+// 在script setup部分，添加一个ref用于存储定时器ID
+const pollTimer = ref(null);
 
 // 获取所有数据
 const fetchAllData = async () => {
@@ -376,8 +379,17 @@ function handleGoMain() {
   uni.redirectTo({ url: '/pages/main/index' })
 }
 
+// 修改onMounted钩子，启动定时器
 onMounted(() => {
-  fetchAllData()
+  fetchAllData();
+  pollTimer.value = setInterval(fetchAllData, 5000);
+})
+
+// 添加onUnmounted钩子，清除定时器
+onUnmounted(() => {
+  if (pollTimer.value) {
+    clearInterval(pollTimer.value);
+  }
 })
 </script>
 
