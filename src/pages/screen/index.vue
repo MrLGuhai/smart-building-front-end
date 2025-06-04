@@ -1,5 +1,11 @@
 <template>
   <div class="screen-bg">
+    <!-- 添加告警弹窗组件 -->
+    <AlarmDialog 
+      :visible="alarmDialogVisible" 
+      :alarmInfo="currentAlarm"
+      @confirm="handleAlarmConfirm"
+    />
     <!-- 顶部标题和操作栏 -->
     <div class="screen-header">
       <div class="screen-title">智能楼宇环境监控系统数字大屏</div>
@@ -67,6 +73,7 @@ import * as echarts from 'echarts'
 import { environmentAPI, alarmAPI, thresholdAPI, deviceAPI } from '@/api'
 import { useRouter } from 'vue-router'
 import { clearUserInfo } from '@/store/user'
+import AlarmDialog from '@/components/AlarmDialog.vue'
 
 const router = useRouter && useRouter()
 
@@ -107,6 +114,11 @@ const alarmStats = ref({
 
 // 在script setup部分，添加一个ref用于存储定时器ID
 const pollTimer = ref(null);
+
+// 告警相关
+const alarmDialogVisible = ref(false)
+const currentAlarm = ref({})
+const alarmTimer = ref(null)
 
 // 获取所有数据
 const fetchAllData = async () => {
@@ -379,16 +391,42 @@ function handleGoMain() {
   uni.redirectTo({ url: '/pages/main/index' })
 }
 
+// 检查告警
+const checkAlarm = async () => {
+  try {
+    const res = await alarmAPI.getUnprocessedAlarm()
+    if (res.code === 200 && res.data && res.data.records && res.data.records.length > 0) {
+      currentAlarm.value = res.data.records[0]
+      alarmDialogVisible.value = true
+    }
+  } catch (error) {
+    console.error('检查告警失败:', error)
+  }
+}
+
+// 处理告警确认
+const handleAlarmConfirm = () => {
+  alarmDialogVisible.value = false
+  currentAlarm.value = {}
+}
+
 // 修改onMounted钩子，启动定时器
 onMounted(() => {
   fetchAllData();
   pollTimer.value = setInterval(fetchAllData, 5000);
+  // 启动告警检查定时器
+  alarmTimer.value = setInterval(checkAlarm, 2000)
+  // 立即执行一次检查
+  checkAlarm()
 })
 
 // 添加onUnmounted钩子，清除定时器
 onUnmounted(() => {
   if (pollTimer.value) {
     clearInterval(pollTimer.value);
+  }
+  if (alarmTimer.value) {
+    clearInterval(alarmTimer.value)
   }
 })
 </script>

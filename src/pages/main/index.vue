@@ -1,5 +1,10 @@
 <template>
   <view class="main-bg">
+    <AlarmDialog 
+      :visible="alarmDialogVisible" 
+      :alarmInfo="currentAlarm"
+      @confirm="handleAlarmConfirm"
+    />
     <view class="main-header">
       <text class="main-title">智能楼宇环境监控系统</text>
       <view class="main-header-right">
@@ -58,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { user, clearUserInfo } from '@/store/user'
 import DataDisplay from '@/components/DataDisplay.vue'
 import ThresholdSettings from '@/components/ThresholdSettings.vue'
@@ -68,6 +73,8 @@ import ControlHistory from '@/components/ControlHistory.vue'
 import AlarmHistory from '@/components/AlarmHistory.vue'
 import ThresholdHistory from '@/components/ThresholdHistory.vue'
 import ThresholdAnalysis from '@/components/ThresholdAnalysis.vue'
+import AlarmDialog from '@/components/AlarmDialog.vue'
+import { alarmAPI } from '@/api'
 
 const menuItems = [
   { name: '数据展示', icon: 'list' },
@@ -126,6 +133,45 @@ const handleLogout = () => {
 const handleGoScreen = () => {
   uni.redirectTo({ url: '/pages/screen/index' })
 }
+
+// 告警相关
+const alarmDialogVisible = ref(false)
+const currentAlarm = ref({})
+const alarmTimer = ref(null)
+
+// 检查告警
+const checkAlarm = async () => {
+  try {
+    const res = await alarmAPI.getUnprocessedAlarm()
+    if (res.code === 200 && res.data && res.data.records && res.data.records.length > 0) {
+      currentAlarm.value = res.data.records[0]
+      alarmDialogVisible.value = true
+    }
+  } catch (error) {
+    console.error('检查告警失败:', error)
+  }
+}
+
+// 处理告警确认
+const handleAlarmConfirm = () => {
+  alarmDialogVisible.value = false
+  currentAlarm.value = {}
+}
+
+// 在组件挂载时启动定时器
+onMounted(() => {
+  // 启动告警检查定时器
+  alarmTimer.value = setInterval(checkAlarm, 2000)
+  // 立即执行一次检查
+  checkAlarm()
+})
+
+// 在组件卸载时清除定时器
+onUnmounted(() => {
+  if (alarmTimer.value) {
+    clearInterval(alarmTimer.value)
+  }
+})
 </script>
 
 <style lang="scss" scoped>

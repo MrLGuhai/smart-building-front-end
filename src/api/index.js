@@ -162,5 +162,12 @@ export const alarmAPI = {
       method: 'GET',
       data: params
     })
+  },
+
+  // 获取未处理的告警记录
+  getUnprocessedAlarm: () => {
+    return request('/alarm/unprocessed', {
+      method: 'GET'
+    })
   }
 } 
